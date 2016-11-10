@@ -1,0 +1,6 @@
+node_modules/
+mock/
+src/
+package.json
+gulpfile.js
+.project
