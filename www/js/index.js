@@ -51,8 +51,10 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Swiper = __webpack_require__(2);
-	var SwiperAnimate = __webpack_require__(3);
+	var Iconfont=__webpack_require__(2)
+	var Swiper = __webpack_require__(3);
+	var IScroll=__webpack_require__(4);
+	var SwiperAnimate = __webpack_require__(5); 
 	var swiper = new Swiper(".swiper-container", {
 		onInit: function(swiper){ //Swiper2.x的初始化是onFirstInit
 			SwiperAnimate.swiperAnimateCache(swiper); //隐藏动画元素 
@@ -62,12 +64,12 @@
 			SwiperAnimate.swiperAnimate(swiper); //每个slide切换结束时也运行当前slide动画
 		}
 	});
-	var wx = __webpack_require__(4);
-	var $ = __webpack_require__(5);
+	var wx = __webpack_require__(6);
+	var $ = __webpack_require__(7);
 
-	__webpack_require__(6);
-	__webpack_require__(7);
 	__webpack_require__(8);
+	__webpack_require__(9);
+	__webpack_require__(10);
 
 	module.exports = $;
 
@@ -81,6 +83,8 @@
 		tapSkill();
 		$("#skill").tap(tapSkill);
 		$("#project").tap(tapProject);
+		$("#work").tap(tapWork);
+		$("#my").tap(tapMy);
 		$("#twocode").tap(function(){
 
 		})
@@ -93,26 +97,21 @@
 			'success':function(data){ 
 				var pos=data.indexOf("<");
 				var jsondata=JSON.parse(data.substring(0,pos));
-				//console.log((jsondata)); 
-				$("#scroller ul li").remove(); 
+				$("#scroller ul li,#line").remove(); 
 				$("#scroller ul")[0].className="skillpage"; 
 				for (var i = 0; i < jsondata.length; i++) {
 					var str=jsondata[i].name;
 					var reg=new RegExp('\/',"g");
 					str=str.replace(reg,' '); 
-					console.log(jsondata[i].face);
-					$("#scroller ul").append("<li><div class='category'>"+jsondata[i].category+"</div><div class='details'><div class='name'>内容：<p>"+str+"</p></div><div class='level'>程度："+jsondata[i].lastText+"</div><img class='face' src='"+jsondata[i].face+"'/></div></li>")
+					$("#scroller ul").append("<li><div class='category'><img class='face' src='"+jsondata[i].face+"'/></div><div class='details'><div class='level'>"+jsondata[i].lastText+"</div>包括：<div class='name'>"+str+"</div></div></li>")
 				} 
-				var IScroll=__webpack_require__(9);
 				var myScroll;
 				myScroll = new IScroll('#wrapper', { mouseWheel: true });
 				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 				$("#scroller ul li").each(function(){
-					var sofanm=parseInt(Math.random()*10)/10+1; 
+					var sofanm=parseInt(Math.random()*10)/10+0.4; 
 					$(this).css("transition","all "+sofanm+"s").addClass('anim'); 
 				})
-				
-				
 			}
 		})
 		}
@@ -121,11 +120,12 @@
 			function tapProject(){
 			$.ajax({
 			'type':'get',
-			'url':'mock/project.json', 
+			'url':'http://2060703991.applinzi.com/project.php', 
 			'async':'true',
-			'success':function(data){ 
-				console.log(data);
-				$("#scroller ul li").remove();  
+			'success':function(data){
+				 var pos=data.indexOf("<");
+				var data=JSON.parse(data.substring(0,pos));
+				$("#scroller ul li,#line").remove();  
 				$("#scroller ul")[0].className="projectpage";  
 				for (var i = 0; i < data.length; i++) {
 					if(data[i].image){
@@ -133,20 +133,67 @@
 					}else{
 						var imgsrc=data[i].images;
 					}
-					$("#scroller ul").append("<li><div class='category'>"+data[i].category+"</div><img class='printimage' src='"+imgsrc+"'/><div class='name'>"+data[i].name+"</div><div class='description'>"+data[i].description+"</div><div class='detail'>"+data[i].detail+"</div><div class='tech'> 应用到的技术:"+data[i].tech+"</div><a href='"+data[i].url+"'>马上转到</a></li>")
+					$("#scroller ul").append("<li><div class='category'>"+data[i].category+":<b>"+data[i].name+"</b></div><figure><img class='printimage' src='"+imgsrc+"'/><figcation class='description'>"+data[i].description+"</figcation></figure><div class='time'>项目历时:"+data[i].time+"</div><div class='detail'>主要任务:"+data[i].detail+"</div><div class='tech'> 应用到的技术:"+data[i].tech+"</div><div class='gourl'>网址:<a href='"+data[i].url+"'>"+data[i].url+"</a></div></li>")
 				}
-		 var IScroll=__webpack_require__(9);
 		 var myScroll; 
-
 		 myScroll = new IScroll('#wrapper', { mouseWheel: true });
-		
 		 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
-		
 			}
 		})
 		}
 		//-----------------tapproject End
-		
+		//-----------------tapWork
+				function tapWork(){
+					$.ajax({
+			'type':'get',
+			'url':'http://2060703991.applinzi.com/work.php', 
+			'async':'true',
+			'success':function(data){
+				 var pos=data.indexOf("<");
+				var data=JSON.parse(data.substring(0,pos));
+				console.log(data);
+				$("#scroller ul li,#line").remove();  
+				$("#scroller ul")[0].className="workpage";  
+				//for (var i = 0; i < data.length; i++) {
+					//$("#scroller ul").append("<li><div class='category'>"+data[i].category+":<b>"+data[i].name+"</b></div><figure><img class='printimage' src='"+imgsrc+"'/><figcation class='description'>"+data[i].description+"</figcation></figure><div class='time'>项目历时:"+data[i].time+"</div><div class='detail'>主要任务:"+data[i].detail+"</div><div class='tech'> 应用到的技术:"+data[i].tech+"</div><div class='gourl'>网址:<a href='"+data[i].url+"'>"+data[i].url+"</a></div></li>")
+				//}
+		 		var myScroll; 
+				 myScroll = new IScroll('#wrapper', { mouseWheel: true });
+				 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+			}
+		})
+				}
+		//-----------------tapWork End
+		//-----------------tapMy
+				function tapMy(){
+					$.ajax({
+			'type':'get',
+			'url':'http://2060703991.applinzi.com/my.php', 
+			'async':'true',
+			'success':function(data){
+				 var pos=data.indexOf("<");
+				var data=JSON.parse(data.substring(0,pos));
+				console.log(data);
+				$("#scroller ul li,#line").remove();  
+				$("#scroller ul")[0].className="workpage";
+				$("#scroller ul").append("<li><span>职业:</span>"+data.work+"</li>")
+									.append("<li><span>姓名:</span>"+data.name+"</li>")
+									.append("<li><span>年龄:</span>"+data.age+"</li>")
+									.append("<li><span>出生日期:</span>"+data.birth+"</li>")
+									.append("<li><span>籍贯:</span>"+data.home+"</li>")
+									.append("<li><span>目标薪酬:</span>"+data.money+"</li>")
+									.append("<div id='line'></div>");
+									var ary=$(".workpage li");
+									var lastli=$(ary[ary.length-1]);
+				$("#line").height(lastli.position().top+lastli.height());
+		 		var myScroll; 
+				 myScroll = new IScroll('#wrapper', { mouseWheel: true });
+				 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				 $("#scroller ul li").css("transition","all 1s").addClass('anim'); 
+			}
+		})
+				}
+		//-----------------tapMy End
 
 		
 	})
@@ -154,6 +201,179 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	;(function(window) {
+
+	var svgSprite = '<svg>' +
+	  ''+
+	    '<symbol id="icon-ditu" viewBox="0 0 1024 1024">'+
+	      ''+
+	      '<path d="M240.64 339.968q6.144 23.552 13.824 51.2t17.408 56.32 22.016 56.832 26.624 52.736l0 403.456-256 63.488 0-640zM317.44 305.152q0-5.12-0.512-9.728t-0.512-9.728q0-46.08 17.92-86.016t48.64-70.144 71.68-47.616 88.064-17.408 88.064 17.408 71.68 47.616 48.64 70.144 17.92 86.016l0 12.288q0 6.144-1.024 12.288-6.144 54.272-24.064 103.936t-45.568 95.744-63.488 88.576-76.8 81.408q-7.168 7.168-15.36 7.168t-15.36-7.168q-41.984-38.912-77.824-81.92t-63.488-90.112-45.568-97.792-23.04-104.96zM542.72 191.488q-20.48 0-37.888 7.168t-30.208 19.968-20.48 30.208-7.68 36.864 7.68 36.864 20.48 30.208 30.208 19.968 37.888 7.168 38.4-7.168 30.72-19.968 20.48-30.208 7.68-36.864-7.68-36.864-20.48-30.208-30.72-19.968-38.4-7.168zM384 640q29.696 32.768 57.856 59.392t50.688 47.104q26.624 23.552 50.176 41.984 12.288-10.24 27.648-23.552 13.312-11.264 30.72-28.672t39.936-38.912l0 326.656-257.024-63.488 0-320.512zM960.512 319.488l0 641.024-256 63.488 0-392.192q6.144-6.144 11.776-12.8t11.776-12.8q20.48-22.528 37.888-53.76t31.232-66.56 24.576-70.656 18.944-66.048z"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	    '<symbol id="icon-erweima" viewBox="0 0 1024 1024">'+
+	      ''+
+	      '<path d="M152.075264 123.511808c101.716992 0 203.435008 0 305.152 0 31.031296 3.073024 23.552 57.696256 23.552 93.184 0 63.742976 0 105.755648 0 168.96 0 36.721664 6.915072 81.729536-17.408 92.16-15.840256 6.793216-58.351616 2.048-78.848 2.048-56.271872 0-102.012928 0-161.792 0-37.400576 0-88.469504 8.927232-94.208-23.552 0-103.083008 0-206.164992 0-309.248C132.70528 135.544832 140.061696 127.200256 152.075264 123.511808zM194.059264 193.143808c0 73.387008 0 146.772992 0 220.16 73.387008 0 146.772992 0 220.16 0 0-74.411008 0-148.820992 0-223.232-73.044992 0-146.091008 0-219.136 0C193.890304 190.24384 193.9712 191.690752 194.059264 193.143808z"  ></path>'+
+	      ''+
+	      '<path d="M561.675264 123.511808c101.716992 0 203.435008 0 305.152 0 12.447744 4.61824 21.001216 13.1328 23.552 27.648 0 100.352 0 200.705024 0 301.056-2.792448 12.510208-9.324544 23.196672-21.504 26.624-19.904512 5.600256-52.977664 1.024-76.8 1.024-56.127488 0-102.14912 0-156.672 0-23.626752 0-58.642432 4.97664-77.824-1.024-27.077632-8.471552-19.456-61.329408-19.456-98.304 0-49.115136 0-106.445824 0-157.696C538.123264 180.148224 528.75264 129.476608 561.675264 123.511808zM603.659264 193.143808c0 73.387008 0 146.772992 0 220.16 73.387008 0 146.772992 0 220.16 0 0-74.411008 0-148.820992 0-223.232-73.044992 0-146.091008 0-219.136 0C603.490304 190.24384 603.5712 191.690752 603.659264 193.143808z"  ></path>'+
+	      ''+
+	      '<path d="M294.411264 257.655808c30.661632-5.786624 54.774784 14.930944 55.296 43.008 0.687104 37.025792-37.129216 57.365504-66.56 41.984C249.47712 325.050368 251.693056 265.71776 294.411264 257.655808z"  ></path>'+
+	      ''+
+	      '<path d="M704.011264 257.655808c72.223744-13.493248 70.839296 100.886528 0 89.088C658.929664 339.23584 657.47456 266.350592 704.011264 257.655808z"  ></path>'+
+	      ''+
+	      '<path d="M455.179264 895.607808c-100.692992 0-201.385984 0-302.08 0-12.540928-3.843072-21.01248-11.75552-24.576-24.576 0-102.740992 0-205.483008 0-308.224 2.982912-9.019392 9.868288-19.542016 20.48-22.528 20.0448-5.640192 52.7872-1.024 76.8-1.024 55.189504 0 105.184256 0 156.672 0 23.154688 0 56.85248-5.168128 77.824 1.024 28.371968 8.37632 20.48 60.376064 20.48 97.28 0 56.7296 0 105.121792 0 162.816C480.779264 840.206336 489.356288 892.051456 455.179264 895.607808zM194.059264 608.887808c0 73.388032 0 146.772992 0 220.16 73.387008 0 146.772992 0 220.16 0 0-74.411008 0-148.820992 0-223.232-73.044992 0-146.091008 0-219.136 0C193.890304 605.98784 193.9712 607.434752 194.059264 608.887808z"  ></path>'+
+	      ''+
+	      '<path d="M890.379264 566.903808c0 28.672 0 57.344 0 86.016-2.388992 29.014016-0.342016 62.462976-1.024 93.184-72.704 0-145.408 0-218.112 0 0-16.724992 0-33.451008 0-50.176-20.481024-2.387968-45.395968-0.342016-67.584-1.024-2.388992 64.854016-0.340992 134.142976-1.024 200.704-13.312 0-26.624 0-39.936 0-34.337792-6.882304-24.576-58.407936-24.576-99.328 0-57.078784 0-104.042496 0-158.72 0-23.865344-4.830208-59.64288 1.024-78.848 6.984704-22.913024 37.274624-19.456 67.584-19.456 51.24096 0 96.891904 0 148.48 0 0 45.396992 0 90.795008 0 136.192 22.868992 0 45.739008 0 68.608 0 0.681984-45.056-1.364992-92.841984 1.024-136.192C857.858048 537.302016 888.439808 537.783296 890.379264 566.903808z"  ></path>'+
+	      ''+
+	      '<path d="M299.531264 672.375808c32.740352-3.623936 59.804672 27.841536 47.104 62.464-17.604608 47.98976-101.778432 29.953024-86.016-30.72C264.976384 687.348736 277.561344 674.807808 299.531264 672.375808z"  ></path>'+
+	      ''+
+	      '<path d="M744.971264 895.607808c-24.576 0-49.152 0-73.728 0 0.681984-26.284032-1.363968-55.294976 1.024-79.872 24.235008 0 48.468992 0 72.704 0C744.971264 842.359808 744.971264 868.983808 744.971264 895.607808z"  ></path>'+
+	      ''+
+	      '<path d="M890.379264 815.735808c0 17.408 0 34.816 0 52.224-2.84672 14.56128-11.36128 23.45472-24.576 27.648-17.408 0-34.816 0-52.224 0 0.681984-26.284032-1.363968-55.294976 1.024-79.872C839.862272 815.735808 865.120256 815.735808 890.379264 815.735808z"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	    '<symbol id="icon-xiangmu" viewBox="0 0 1024 1024">'+
+	      ''+
+	      '<path d="M802.133333 136.533333c-8.533333-2.133333-14.933333-2.133333-23.466667-2.133333L189.866667 134.4l0 0 588.8 0C787.2 134.4 795.733333 134.4 802.133333 136.533333zM829.866667 145.066667c-2.133333 0-2.133333-2.133333-4.266667-2.133333C827.733333 142.933333 829.866667 145.066667 829.866667 145.066667zM878.933333 185.6c-2.133333-2.133333-4.266667-6.4-6.4-8.533333C874.666667 181.333333 876.8 183.466667 878.933333 185.6zM921.6 832c-4.266667 0-6.4 0-10.666667 0l-19.2 0L891.733333 232.533333c0-8.533333 0-14.933333-2.133333-23.466667 2.133333 6.4 2.133333 14.933333 2.133333 23.466667L891.733333 832l19.2 0C915.2 832 917.333333 832 921.6 832zM940.8 825.6c-2.133333 2.133333-6.4 2.133333-8.533333 4.266667C934.4 827.733333 938.666667 827.733333 940.8 825.6zM989.866667 27.733333c-21.333333-17.066667-49.066667-25.6-76.8-25.6L245.333333 2.133333c-29.866667 0-57.6 8.533333-76.8 25.6-21.333333 19.2-34.133333 44.8-34.133333 70.4l0 34.133333L113.066667 132.266667c-29.866667 0-57.6 8.533333-76.8 25.6C12.8 179.2 0 204.8 0 232.533333l0 693.333333c0 27.733333 12.8 53.333333 34.133333 70.4 21.333333 17.066667 49.066667 25.6 76.8 25.6l665.6 0c29.866667 0 57.6-8.533333 76.8-25.6 21.333333-19.2 36.266667-44.8 36.266667-70.4l0-34.133333 19.2 0c29.866667 0 57.6-8.533333 76.8-25.6 21.333333-19.2 34.133333-44.8 34.133333-70.4L1019.733333 100.266667C1024 72.533333 1011.2 46.933333 989.866667 27.733333zM834.133333 923.733333c0 21.333333-25.6 38.4-55.466667 38.4L113.066667 962.133333c-29.866667 0-55.466667-17.066667-55.466667-38.4L57.6 232.533333c0-21.333333 25.6-38.4 55.466667-38.4l19.2 0 57.6 0 0 0 588.8 0c29.866667 0 55.466667 17.066667 55.466667 38.4L834.133333 923.733333 834.133333 923.733333zM966.4 791.466667c0 8.533333-4.266667 17.066667-10.666667 23.466667 0 0 0 0-2.133333 2.133333-2.133333 2.133333-4.266667 4.266667-6.4 4.266667 0 0-2.133333 0-2.133333 2.133333s-2.133333 0-2.133333 2.133333c0 0-2.133333 0-2.133333 2.133333 0 0 0 0-2.133333 0-2.133333 2.133333-6.4 2.133333-8.533333 4.266667 0 0-2.133333 0-2.133333 0 0 0 0 0-2.133333 0-2.133333 0-4.266667 0-6.4 2.133333-4.266667 0-6.4 0-10.666667 0l-19.2 0L889.6 232.533333c0-8.533333 0-14.933333-2.133333-23.466667 0-2.133333 0-2.133333-2.133333-4.266667 0-2.133333 0-2.133333-2.133333-4.266667 0-2.133333 0-2.133333-2.133333-4.266667 0-2.133333-2.133333-2.133333-2.133333-4.266667-2.133333-2.133333-2.133333-4.266667-4.266667-6.4-2.133333-2.133333-4.266667-6.4-6.4-8.533333-2.133333-4.266667-6.4-6.4-8.533333-10.666667-2.133333-2.133333-4.266667-4.266667-8.533333-6.4-2.133333-2.133333-2.133333-2.133333-4.266667-4.266667 0 0 0 0-2.133333-2.133333l0 0c-2.133333 0-2.133333-2.133333-4.266667-2.133333-4.266667-2.133333-10.666667-6.4-14.933333-8.533333-2.133333 0-2.133333-2.133333-4.266667-2.133333-2.133333 0-4.266667-2.133333-6.4-2.133333 0 0-2.133333 0-2.133333 0-4.266667 0-6.4-2.133333-10.666667-2.133333 0 0-2.133333 0-2.133333 0-2.133333 0-2.133333 0-4.266667 0-8.533333-2.133333-14.933333-2.133333-23.466667-2.133333L189.866667 134.4 189.866667 100.266667c0-4.266667 0-8.533333 2.133333-12.8 2.133333-4.266667 4.266667-6.4 8.533333-10.666667 10.666667-10.666667 25.6-17.066667 44.8-17.066667l665.6 0c29.866667 0 55.466667 17.066667 55.466667 38.4L966.4 791.466667 966.4 791.466667zM149.333333 253.866667l428.8 0 0 57.6L149.333333 311.466667 149.333333 253.866667zM672 283.733333c0-17.066667 12.8-29.866667 29.866667-32 17.066667 0 29.866667 12.8 32 29.866667 0 0 0 2.133333 0 2.133333 0 17.066667-12.8 29.866667-29.866667 32-17.066667 0-29.866667-12.8-32-29.866667C672 285.866667 672 283.733333 672 283.733333zM57.6 362.666667l776.533333 0 0 57.6L57.6 420.266667 57.6 362.666667 57.6 362.666667z"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	    '<symbol id="icon-chengchangjingli" viewBox="0 0 1055 1024">'+
+	      ''+
+	      '<path d="M1054.752 403.744"  ></path>'+
+	      ''+
+	      '<path d="M831.296 283.52c0-45.92-45.664-45.92-45.664-45.92L237.024 237.6c0 0-45.696 0-45.696 45.92l0 45.952 639.968 0L831.296 283.52 831.296 283.52zM694.112 145.792 328.448 145.792c0 0-45.664 0-45.664 45.952L739.872 191.744C739.872 145.792 694.08 145.792 694.112 145.792L694.112 145.792zM922.656 329.472l-27.04-27.168 0 73.056-768.64 0 0-73.056-27.04 27.168c-27.04 27.2-46.432 34.496-35.52 91.904 10.784 57.152 63.296 370.784 71.04 413.216 8.608 46.56 55.904 45.92 55.904 45.92l639.968 0c0 0 47.328 0.672 55.904-45.92 7.808-42.432 60.256-356.064 71.072-413.216C969.184 363.968 949.824 356.672 922.656 329.472L922.656 329.472zM694.112 577.472c0 0 0 45.92-45.728 45.92l-274.208 0c-45.696 0-45.696-45.92-45.696-45.92l0-91.872 64 0 0 73.504 237.536 0 0-73.504 64.096 0L694.112 577.472 694.112 577.472zM694.112 577.472"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	    '<symbol id="icon-wo" viewBox="0 0 1024 1024">'+
+	      ''+
+	      '<path d="M672.017812 145.524229c-43.244877-45.256695-100.849795-70.180316-162.20308-70.180316-61.352262 0-118.95718 24.923621-162.202057 70.180316-42.88058 44.876025-66.496417 104.442619-66.496417 167.727905 0 63.285285 23.615837 122.85188 66.496417 167.727905 11.970624 12.527302 25.046417 23.488947 38.99202 32.803071-47.223487 16.1058-100.818073 43.473074-147.735592 90.006853-77.78245 77.146977-117.352638 186.799243-117.61051 325.909396-0.030699 16.95412 13.68773 30.723715 30.64185 30.75646 0.020466 0 0.038886 0 0.058328 0 16.927514 0 30.66641-13.708196 30.698132-30.64185 0.291642-157.359777 54.953535-268.473323 162.46607-330.251279 81.517514-46.840771 165.102104-47.3821 166.381235-47.383123 0.045025 0 0.089028 0 0.134053 0 3.04331 0 5.982242-0.449231 8.759492-1.276062 57.370581-2.696409 110.872046-27.279269 151.621081-69.923466 42.88058-44.876025 66.495394-104.441596 66.495394-167.727905C738.514229 249.966849 714.898392 190.400254 672.017812 145.524229zM509.814732 489.762044c-92.248915 0-167.300163-79.181308-167.300163-176.50991s75.051248-176.50991 167.300163-176.50991 167.300163 79.182331 167.300163 176.50991S602.06467 489.762044 509.814732 489.762044z"  ></path>'+
+	      ''+
+	      '<path d="M761.574411 575.095462c-14.617914-8.59167-33.43138-3.706411-42.022027 10.91048s-3.706411 33.430357 10.909456 42.022027c0.240477 0.141216 25.18047 16.012679 50.718074 58.037776 25.971485 42.741411 56.931583 120.368318 56.931583 247.464867 0 16.95412 13.745035 30.699155 30.699155 30.699155s30.699155-13.745035 30.699155-30.699155C899.508786 659.322688 767.206683 578.405854 761.574411 575.095462z"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	    '<symbol id="icon-skill" viewBox="0 0 1458 1024">'+
+	      ''+
+	      '<path d="M1201.152375 848.399582 1008.783316 655.699847l26.187368-26.233218-34.027739-34.084704-78.487076 78.634352-123.043671-123.23124 150.884422-151.194258c20.48528 6.910864 41.944527 10.412146 63.845603 10.412146 53.318137 0 103.453163-20.78539 141.173922-58.529768 58.189365-58.333862 74.69541-145.00727 42.0529-220.804472l-14.02597-32.650846-88.549094 88.726937-59.945564 0.811408 0.791957-56.929181 90.166353-90.306682-32.484118-14.09544C1068.114766 15.284764 1041.332736 9.739678 1013.721236 9.739678c-53.337588 0-103.455942 20.797894-141.118346 58.557556-27.030732 27.05991-45.670892 60.893133-53.908631 97.841386-7.954302 35.681122-5.900772 72.846121 5.918834 107.721393l-150.819121 151.090053L459.154258 209.950497l26.187368-26.213766L333.595778 31.700498 247.159957 118.17939l151.822266 152.068189 26.152633-26.201262 214.635546 214.985675-150.845519 151.110894c-20.588095-6.962272-42.120981-10.489953-64.062349-10.489953-53.332031 0-103.457332 20.797894-141.140576 58.558945-58.308853 58.394996-74.78711 145.172608-41.975094 221.076794l14.070431 32.523021 90.159406-90.298346 56.786073-0.775284-0.818355 60.074778-88.524085 88.693592 32.560535 14.057926c25.159214 10.848417 51.838428 16.349043 79.295706 16.349043 53.326473 0 103.446216-20.786779 141.125293-58.533936 26.979325-27.041847 45.601422-60.837557 53.850276-97.734403 7.965417-35.628325 5.960516-72.737748-5.784063-107.560223l150.920547-151.205373 123.042282 123.217346-78.541263 78.681592 34.023571 34.086094 26.170695-26.219324 192.330156 192.692788c18.542902 18.567911 43.179702 28.795267 69.375406 28.795267 26.1832 0 50.821389-10.224578 69.380964-28.795267C1239.399715 949.039215 1239.392768 886.710834 1201.152375 848.399582zM1131.790863 967.922519c-13.349333 0-25.901152-5.208852-35.339331-14.669261l-192.348218-192.692788 70.656431-70.778698 192.349607 192.691399c19.480745 19.511312 19.489082 51.264607 0.018062 70.782866C1157.690626 962.713667 1145.140196 967.922519 1131.790863 967.922519zM564.337222 739.630583c24.764625 57.587756 12.214195 123.407693-31.974209 167.686409-28.5813 28.642434-66.611894 44.417655-107.085049 44.417655-8.154375 0-16.246227-0.640512-24.164405-1.907643l48.684495-48.776196 1.752031-129.162579-125.787732 1.715906-50.467093 50.560182c-8.025161-48.169029 7.468013-96.828515 42.457215-131.877462 28.610477-28.656328 66.649408-44.437107 107.108669-44.437107 20.971569 0 41.313741 4.209875 60.466588 12.517084l15.022168 6.498213 380.900601-381.570291-6.48154-15.036062c-24.916069-57.641942-12.408711-123.541075 31.864447-167.887871 28.592415-28.653549 66.623009-44.434328 107.086438-44.434328 8.183552 0 16.376831 0.657185 24.468683 1.96044L987.790907 110.387647l-1.739526 126.012814 128.954169-1.747862 48.751187-48.833161c7.893168 48.062045-7.606952 96.61038-42.473888 131.578741-28.634097 28.646602-66.685532 44.421823-107.142014 44.421823-20.884037 0-41.17758-4.184866-60.317922-12.439278l-14.995769-6.455142L557.88347 724.611194 564.337222 739.630583zM333.570768 99.86157l83.723716 83.872382-18.313651 18.348386-83.73761-83.896001L333.570768 99.86157z"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	'</svg>'
+	var script = function() {
+	    var scripts = document.getElementsByTagName('script')
+	    return scripts[scripts.length - 1]
+	  }()
+	var shouldInjectCss = script.getAttribute("data-injectcss")
+
+	/**
+	 * document ready
+	 */
+	var ready = function(fn){
+	  if(document.addEventListener){
+	      document.addEventListener("DOMContentLoaded",function(){
+	          document.removeEventListener("DOMContentLoaded",arguments.callee,false)
+	          fn()
+	      },false)
+	  }else if(document.attachEvent){
+	     IEContentLoaded (window, fn)
+	  }
+
+	  function IEContentLoaded (w, fn) {
+	      var d = w.document, done = false,
+	      // only fire once
+	      init = function () {
+	          if (!done) {
+	              done = true
+	              fn()
+	          }
+	      }
+	      // polling for no errors
+	      ;(function () {
+	          try {
+	              // throws errors until after ondocumentready
+	              d.documentElement.doScroll('left')
+	          } catch (e) {
+	              setTimeout(arguments.callee, 50)
+	              return
+	          }
+	          // no errors, fire
+
+	          init()
+	      })()
+	      // trying to always fire before onload
+	      d.onreadystatechange = function() {
+	          if (d.readyState == 'complete') {
+	              d.onreadystatechange = null
+	              init()
+	          }
+	      }
+	  }
+	}
+
+	/**
+	 * Insert el before target
+	 *
+	 * @param {Element} el
+	 * @param {Element} target
+	 */
+
+	var before = function (el, target) {
+	  target.parentNode.insertBefore(el, target)
+	}
+
+	/**
+	 * Prepend el to target
+	 *
+	 * @param {Element} el
+	 * @param {Element} target
+	 */
+
+	var prepend = function (el, target) {
+	  if (target.firstChild) {
+	    before(el, target.firstChild)
+	  } else {
+	    target.appendChild(el)
+	  }
+	}
+
+	function appendSvg(){
+	  var div,svg
+
+	  div = document.createElement('div')
+	  div.innerHTML = svgSprite
+	  svg = div.getElementsByTagName('svg')[0]
+	  if (svg) {
+	    svg.setAttribute('aria-hidden', 'true')
+	    svg.style.position = 'absolute'
+	    svg.style.width = 0
+	    svg.style.height = 0
+	    svg.style.overflow = 'hidden'
+	    prepend(svg,document.body)
+	  }
+	}
+
+	if(shouldInjectCss && !window.__iconfont__svg__cssinject__){
+	  window.__iconfont__svg__cssinject__ = true
+	  try{
+	    document.write("<style>.svgfont {display: inline-block;width: 1em;height: 1em;fill: currentColor;vertical-align: -0.1em;font-size:16px;}</style>");
+	  }catch(e){
+	    console && console.log(e)
+	  }
+	}
+
+	ready(appendSvg)
+
+
+	})(window)
+
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -177,2225 +397,7 @@
 
 
 /***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	function swiperAnimateCache() {
-	  for (allBoxes = window.document.documentElement.querySelectorAll(".ani"), i = 0; i < allBoxes.length; i++) allBoxes[i].attributes["style"] ? allBoxes[i].setAttribute("swiper-animate-style-cache", allBoxes[i].attributes["style"].value) : allBoxes[i].setAttribute("swiper-animate-style-cache", " "),
-	    allBoxes[i].style.visibility = "hidden"
-	}
-	function swiperAnimate(a) {
-	  clearSwiperAnimate();
-	  var b = a.slides[a.activeIndex].querySelectorAll(".ani");
-	  for (i = 0; i < b.length; i++) b[i].style.visibility = "visible",
-	    effect = b[i].attributes["swiper-animate-effect"] ? b[i].attributes["swiper-animate-effect"].value : "",
-	    b[i].className = b[i].className + "  " + effect + " " + "animated",
-	    style = b[i].attributes["style"].value,
-	    duration = b[i].attributes["swiper-animate-duration"] ? b[i].attributes["swiper-animate-duration"].value : "",
-	    duration && (style = style + "animation-duration:" + duration + ";-webkit-animation-duration:" + duration + ";"),
-	    delay = b[i].attributes["swiper-animate-delay"] ? b[i].attributes["swiper-animate-delay"].value : "",
-	    delay && (style = style + "animation-delay:" + delay + ";-webkit-animation-delay:" + delay + ";"),
-	    b[i].setAttribute("style", style)
-	}
-	function clearSwiperAnimate() {
-	  for (allBoxes = window.document.documentElement.querySelectorAll(".ani"), i = 0; i < allBoxes.length; i++) allBoxes[i].attributes["swiper-animate-style-cache"] && allBoxes[i].setAttribute("style", allBoxes[i].attributes["swiper-animate-style-cache"].value),
-	    allBoxes[i].style.visibility = "hidden",
-	    allBoxes[i].className = allBoxes[i].className.replace("animated", " "),
-	    allBoxes[i].attributes["swiper-animate-effect"] && (effect = allBoxes[i].attributes["swiper-animate-effect"].value, allBoxes[i].className = allBoxes[i].className.replace(effect, " "))
-	}
-
-	module.exports = {
-	  swiperAnimateCache: swiperAnimateCache,
-	  swiperAnimate: swiperAnimate,
-	  clearSwiperAnimate: clearSwiperAnimate
-	}
-
-
-/***/ },
 /* 4 */
-/***/ function(module, exports) {
-
-	!function (a, b) {
-	    module.exports = b(a)
-	}(window, function (a, b) {
-	    function c(b, c, d) {
-	        a.WeixinJSBridge ? WeixinJSBridge.invoke(b, e(c), function (a) {
-	            g(b, a, d)
-	        }) : j(b, d)
-	    }
-
-	    function d(b, c, d) {
-	        a.WeixinJSBridge ? WeixinJSBridge.on(b, function (a) {
-	            d && d.trigger && d.trigger(a), g(b, a, c)
-	        }) : d ? j(b, d) : j(b, c)
-	    }
-
-	    function e(a) {
-	        return a = a || {}, a.appId = z.appId, a.verifyAppId = z.appId, a.verifySignType = "sha1", a.verifyTimestamp = z.timestamp + "", a.verifyNonceStr = z.nonceStr, a.verifySignature = z.signature, a
-	    }
-
-	    function f(a) {
-	        return {
-	            timeStamp: a.timestamp + "",
-	            nonceStr: a.nonceStr,
-	            "package": a.package,
-	            paySign: a.paySign,
-	            signType: a.signType || "SHA1"
-	        }
-	    }
-
-	    function g(a, b, c) {
-	        var d, e, f;
-	        switch (delete b.err_code, delete b.err_desc, delete b.err_detail, d = b.errMsg, d || (d = b.err_msg, delete b.err_msg, d = h(a, d, c), b.errMsg = d), c = c || {}, c._complete && (c._complete(b), delete c._complete), d = b.errMsg || "", z.debug && !c.isInnerInvoke && alert(JSON.stringify(b)), e = d.indexOf(":"), f = d.substring(e + 1)) {
-	            case"ok":
-	                c.success && c.success(b);
-	                break;
-	            case"cancel":
-	                c.cancel && c.cancel(b);
-	                break;
-	            default:
-	                c.fail && c.fail(b)
-	        }
-	        c.complete && c.complete(b)
-	    }
-
-	    function h(a, b) {
-	        var d, e, f, g;
-	        if (b) {
-	            switch (d = b.indexOf(":"), a) {
-	                case o.config:
-	                    e = "config";
-	                    break;
-	                case o.openProductSpecificView:
-	                    e = "openProductSpecificView";
-	                    break;
-	                default:
-	                    e = b.substring(0, d), e = e.replace(/_/g, " "), e = e.replace(/\b\w+\b/g, function (a) {
-	                        return a.substring(0, 1).toUpperCase() + a.substring(1)
-	                    }), e = e.substring(0, 1).toLowerCase() + e.substring(1), e = e.replace(/ /g, ""), -1 != e.indexOf("Wcpay") && (e = e.replace("Wcpay", "WCPay")), f = p[e], f && (e = f)
-	            }
-	            g = b.substring(d + 1), "confirm" == g && (g = "ok"), "failed" == g && (g = "fail"), -1 != g.indexOf("failed_") && (g = g.substring(7)), -1 != g.indexOf("fail_") && (g = g.substring(5)), g = g.replace(/_/g, " "), g = g.toLowerCase(), ("access denied" == g || "no permission to execute" == g) && (g = "permission denied"), "config" == e && "function not exist" == g && (g = "ok"), b = e + ":" + g
-	        }
-	        return b
-	    }
-
-	    function i(a) {
-	        var b, c, d, e;
-	        if (a) {
-	            for (b = 0, c = a.length; c > b; ++b)d = a[b], e = o[d], e && (a[b] = e);
-	            return a
-	        }
-	    }
-
-	    function j(a, b) {
-	        if (!(!z.debug || b && b.isInnerInvoke)) {
-	            var c = p[a];
-	            c && (a = c), b && b._complete && delete b._complete, console.log('"' + a + '",', b || "")
-	        }
-	    }
-
-	    function k() {
-	        if (!("6.0.2" > w || y.systemType < 0)) {
-	            var b = new Image;
-	            y.appId = z.appId, y.initTime = x.initEndTime - x.initStartTime, y.preVerifyTime = x.preVerifyEndTime - x.preVerifyStartTime, C.getNetworkType({
-	                isInnerInvoke: !0,
-	                success: function (a) {
-	                    y.networkType = a.networkType;
-	                    var c = "https://open.weixin.qq.com/sdk/report?v=" + y.version + "&o=" + y.isPreVerifyOk + "&s=" + y.systemType + "&c=" + y.clientVersion + "&a=" + y.appId + "&n=" + y.networkType + "&i=" + y.initTime + "&p=" + y.preVerifyTime + "&u=" + y.url;
-	                    b.src = c
-	                }
-	            })
-	        }
-	    }
-
-	    function l() {
-	        return (new Date).getTime()
-	    }
-
-	    function m(b) {
-	        t && (a.WeixinJSBridge ? b() : q.addEventListener && q.addEventListener("WeixinJSBridgeReady", b, !1))
-	    }
-
-	    function n() {
-	        C.invoke || (C.invoke = function (b, c, d) {
-	            a.WeixinJSBridge && WeixinJSBridge.invoke(b, e(c), d)
-	        }, C.on = function (b, c) {
-	            a.WeixinJSBridge && WeixinJSBridge.on(b, c)
-	        })
-	    }
-
-	    var o, p, q, r, s, t, u, v, w, x, y, z, A, B, C;
-	    if (!a.jWeixin)return o = {
-	        config: "preVerifyJSAPI",
-	        onMenuShareTimeline: "menu:share:timeline",
-	        onMenuShareAppMessage: "menu:share:appmessage",
-	        onMenuShareQQ: "menu:share:qq",
-	        onMenuShareWeibo: "menu:share:weiboApp",
-	        onMenuShareQZone: "menu:share:QZone",
-	        previewImage: "imagePreview",
-	        getLocation: "geoLocation",
-	        openProductSpecificView: "openProductViewWithPid",
-	        addCard: "batchAddCard",
-	        openCard: "batchViewCard",
-	        chooseWXPay: "getBrandWCPayRequest"
-	    }, p = function () {
-	        var b, a = {};
-	        for (b in o)a[o[b]] = b;
-	        return a
-	    }(), q = a.document,
-	        r = q.title,
-	        s = navigator.userAgent.toLowerCase(), t = -1 != s.indexOf("micromessenger"), u = -1 != s.indexOf("android"), v = -1 != s.indexOf("iphone") || -1 != s.indexOf("ipad"), w = function () {
-	        var a = s.match(/micromessenger\/(\d+\.\d+\.\d+)/) || s.match(/micromessenger\/(\d+\.\d+)/);
-	        return a ? a[1] : ""
-	    }(), x = {initStartTime: l(), initEndTime: 0, preVerifyStartTime: 0, preVerifyEndTime: 0}, y = {
-	        version: 1,
-	        appId: "",
-	        initTime: 0,
-	        preVerifyTime: 0,
-	        networkType: "",
-	        isPreVerifyOk: 1,
-	        systemType: v ? 1 : u ? 2 : -1,
-	        clientVersion: w,
-	        url: encodeURIComponent(location.href)
-	    }, z = {}, A = {_completes: []}, B = {state: 0, res: {}}, m(function () {
-	        x.initEndTime = l()
-	    }), C = {
-	        config: function (a) {
-	            z = a, j("config", a);
-	            var b = z.check === !1 ? !1 : !0;
-	            m(function () {
-	                var a, d, e;
-	                if (b)c(o.config, {verifyJsApiList: i(z.jsApiList)}, function () {
-	                    A._complete = function (a) {
-	                        x.preVerifyEndTime = l(), B.state = 1, B.res = a
-	                    }, A.success = function () {
-	                        y.isPreVerifyOk = 0
-	                    }, A.fail = function (a) {
-	                        A._fail ? A._fail(a) : B.state = -1
-	                    };
-	                    var a = A._completes;
-	                    return a.push(function () {
-	                        z.debug || k()
-	                    }), A.complete = function () {
-	                        for (var c = 0, d = a.length; d > c; ++c)a[c]();
-	                        A._completes = []
-	                    }, A
-	                }()), x.preVerifyStartTime = l(); else {
-	                    for (B.state = 1, a = A._completes, d = 0, e = a.length; e > d; ++d)a[d]();
-	                    A._completes = []
-	                }
-	            }), z.beta && n()
-	        }, ready: function (a) {
-	            0 != B.state ? a() : (A._completes.push(a), !t && z.debug && a())
-	        }, error: function (a) {
-	            "6.0.2" > w || (-1 == B.state ? a(B.res) : A._fail = a)
-	        }, checkJsApi: function (a) {
-	            var b = function (a) {
-	                var c, d, b = a.checkResult;
-	                for (c in b)d = p[c], d && (b[d] = b[c], delete b[c]);
-	                return a
-	            };
-	            c("checkJsApi", {jsApiList: i(a.jsApiList)}, function () {
-	                return a._complete = function (a) {
-	                    if (u) {
-	                        var c = a.checkResult;
-	                        c && (a.checkResult = JSON.parse(c))
-	                    }
-	                    a = b(a)
-	                }, a
-	            }())
-	        }, onMenuShareTimeline: function (a) {
-	            d(o.onMenuShareTimeline, {
-	                complete: function () {
-	                    c("shareTimeline", {
-	                        title: a.title || r,
-	                        desc: a.title || r,
-	                        img_url: a.imgUrl || "",
-	                        link: a.link || location.href
-	                    }, a)
-	                }
-	            }, a)
-	        }, onMenuShareAppMessage: function (a) {
-	            d(o.onMenuShareAppMessage, {
-	                complete: function () {
-	                    c("sendAppMessage", {
-	                        title: a.title || r,
-	                        desc: a.desc || "",
-	                        link: a.link || location.href,
-	                        img_url: a.imgUrl || "",
-	                        type: a.type || "link",
-	                        data_url: a.dataUrl || ""
-	                    }, a)
-	                }
-	            }, a)
-	        }, onMenuShareQQ: function (a) {
-	            d(o.onMenuShareQQ, {
-	                complete: function () {
-	                    c("shareQQ", {
-	                        title: a.title || r,
-	                        desc: a.desc || "",
-	                        img_url: a.imgUrl || "",
-	                        link: a.link || location.href
-	                    }, a)
-	                }
-	            }, a)
-	        }, onMenuShareWeibo: function (a) {
-	            d(o.onMenuShareWeibo, {
-	                complete: function () {
-	                    c("shareWeiboApp", {
-	                        title: a.title || r,
-	                        desc: a.desc || "",
-	                        img_url: a.imgUrl || "",
-	                        link: a.link || location.href
-	                    }, a)
-	                }
-	            }, a)
-	        }, onMenuShareQZone: function (a) {
-	            d(o.onMenuShareQZone, {
-	                complete: function () {
-	                    c("shareQZone", {
-	                        title: a.title || r,
-	                        desc: a.desc || "",
-	                        img_url: a.imgUrl || "",
-	                        link: a.link || location.href
-	                    }, a)
-	                }
-	            }, a)
-	        }, startRecord: function (a) {
-	            c("startRecord", {}, a)
-	        }, stopRecord: function (a) {
-	            c("stopRecord", {}, a)
-	        }, onVoiceRecordEnd: function (a) {
-	            d("onVoiceRecordEnd", a)
-	        }, playVoice: function (a) {
-	            c("playVoice", {localId: a.localId}, a)
-	        }, pauseVoice: function (a) {
-	            c("pauseVoice", {localId: a.localId}, a)
-	        }, stopVoice: function (a) {
-	            c("stopVoice", {localId: a.localId}, a)
-	        }, onVoicePlayEnd: function (a) {
-	            d("onVoicePlayEnd", a)
-	        }, uploadVoice: function (a) {
-	            c("uploadVoice", {localId: a.localId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
-	        }, downloadVoice: function (a) {
-	            c("downloadVoice", {serverId: a.serverId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
-	        }, translateVoice: function (a) {
-	            c("translateVoice", {localId: a.localId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
-	        }, chooseImage: function (a) {
-	            c("chooseImage", {
-	                scene: "1|2",
-	                count: a.count || 9,
-	                sizeType: a.sizeType || ["original", "compressed"],
-	                sourceType: a.sourceType || ["album", "camera"]
-	            }, function () {
-	                return a._complete = function (a) {
-	                    if (u) {
-	                        var b = a.localIds;
-	                        b && (a.localIds = JSON.parse(b))
-	                    }
-	                }, a
-	            }())
-	        }, previewImage: function (a) {
-	            c(o.previewImage, {current: a.current, urls: a.urls}, a)
-	        }, uploadImage: function (a) {
-	            c("uploadImage", {localId: a.localId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
-	        }, downloadImage: function (a) {
-	            c("downloadImage", {serverId: a.serverId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
-	        }, getNetworkType: function (a) {
-	            var b = function (a) {
-	                var c, d, e, b = a.errMsg;
-	                if (a.errMsg = "getNetworkType:ok", c = a.subtype, delete a.subtype, c)a.networkType = c; else switch (d = b.indexOf(":"), e = b.substring(d + 1)) {
-	                    case"wifi":
-	                    case"edge":
-	                    case"wwan":
-	                        a.networkType = e;
-	                        break;
-	                    default:
-	                        a.errMsg = "getNetworkType:fail"
-	                }
-	                return a
-	            };
-	            c("getNetworkType", {}, function () {
-	                return a._complete = function (a) {
-	                    a = b(a)
-	                }, a
-	            }())
-	        }, openLocation: function (a) {
-	            c("openLocation", {
-	                latitude: a.latitude,
-	                longitude: a.longitude,
-	                name: a.name || "",
-	                address: a.address || "",
-	                scale: a.scale || 28,
-	                infoUrl: a.infoUrl || ""
-	            }, a)
-	        }, getLocation: function (a) {
-	            a = a || {}, c(o.getLocation, {type: a.type || "wgs84"}, function () {
-	                return a._complete = function (a) {
-	                    delete a.type
-	                }, a
-	            }())
-	        }, hideOptionMenu: function (a) {
-	            c("hideOptionMenu", {}, a)
-	        }, showOptionMenu: function (a) {
-	            c("showOptionMenu", {}, a)
-	        }, closeWindow: function (a) {
-	            a = a || {}, c("closeWindow", {immediate_close: a.immediateClose || 0}, a)
-	        }, hideMenuItems: function (a) {
-	            c("hideMenuItems", {menuList: a.menuList}, a)
-	        }, showMenuItems: function (a) {
-	            c("showMenuItems", {menuList: a.menuList}, a)
-	        }, hideAllNonBaseMenuItem: function (a) {
-	            c("hideAllNonBaseMenuItem", {}, a)
-	        }, showAllNonBaseMenuItem: function (a) {
-	            c("showAllNonBaseMenuItem", {}, a)
-	        }, scanQRCode: function (a) {
-	            a = a || {}, c("scanQRCode", {
-	                needResult: a.needResult || 0,
-	                scanType: a.scanType || ["qrCode", "barCode"]
-	            }, function () {
-	                return a._complete = function (a) {
-	                    var b, c;
-	                    v && (b = a.resultStr, b && (c = JSON.parse(b), a.resultStr = c && c.scan_code && c.scan_code.scan_result))
-	                }, a
-	            }())
-	        }, openProductSpecificView: function (a) {
-	            c(o.openProductSpecificView, {pid: a.productId, view_type: a.viewType || 0}, a)
-	        }, addCard: function (a) {
-	            var e, f, g, h, b = a.cardList, d = [];
-	            for (e = 0, f = b.length; f > e; ++e)g = b[e], h = {card_id: g.cardId, card_ext: g.cardExt}, d.push(h);
-	            c(o.addCard, {card_list: d}, function () {
-	                return a._complete = function (a) {
-	                    var c, d, e, b = a.card_list;
-	                    if (b) {
-	                        for (b = JSON.parse(b), c = 0, d = b.length; d > c; ++c)e = b[c], e.cardId = e.card_id, e.cardExt = e.card_ext, e.isSuccess = e.is_succ ? !0 : !1, delete e.card_id, delete e.card_ext, delete e.is_succ;
-	                        a.cardList = b, delete a.card_list
-	                    }
-	                }, a
-	            }())
-	        }, chooseCard: function (a) {
-	            c("chooseCard", {
-	                app_id: z.appId,
-	                location_id: a.shopId || "",
-	                sign_type: a.signType || "SHA1",
-	                card_id: a.cardId || "",
-	                card_type: a.cardType || "",
-	                card_sign: a.cardSign,
-	                time_stamp: a.timestamp + "",
-	                nonce_str: a.nonceStr
-	            }, function () {
-	                return a._complete = function (a) {
-	                    a.cardList = a.choose_card_info, delete a.choose_card_info
-	                }, a
-	            }())
-	        }, openCard: function (a) {
-	            var e, f, g, h, b = a.cardList, d = [];
-	            for (e = 0, f = b.length; f > e; ++e)g = b[e], h = {card_id: g.cardId, code: g.code}, d.push(h);
-	            c(o.openCard, {card_list: d}, a)
-	        }, chooseWXPay: function (a) {
-	            c(o.chooseWXPay, f(a), a)
-	        }
-	    }, b && (a.wx = a.jWeixin = C), C
-	});
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	//     Zepto.js
-	//     (c) 2010-2016 Thomas Fuchs
-	//     Zepto.js may be freely distributed under the MIT license.
-
-	var Zepto = (function() {
-	  var undefined, key, $, classList, emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filter, slice = emptyArray.slice,
-	    document = window.document,
-	    elementDisplay = {}, classCache = {},
-	    cssNumber = { 'column-count': 1, 'columns': 1, 'font-weight': 1, 'line-height': 1,'opacity': 1, 'z-index': 1, 'zoom': 1 },
-	    fragmentRE = /^\s*<(\w+|!)[^>]*>/,
-	    singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
-	    tagExpanderRE = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
-	    rootNodeRE = /^(?:body|html)$/i,
-	    capitalRE = /([A-Z])/g,
-
-	    // special attributes that should be get/set via method calls
-	    methodAttributes = ['val', 'css', 'html', 'text', 'data', 'width', 'height', 'offset'],
-
-	    adjacencyOperators = [ 'after', 'prepend', 'before', 'append' ],
-	    table = document.createElement('table'),
-	    tableRow = document.createElement('tr'),
-	    containers = {
-	      'tr': document.createElement('tbody'),
-	      'tbody': table, 'thead': table, 'tfoot': table,
-	      'td': tableRow, 'th': tableRow,
-	      '*': document.createElement('div')
-	    },
-	    readyRE = /complete|loaded|interactive/,
-	    simpleSelectorRE = /^[\w-]*$/,
-	    class2type = {},
-	    toString = class2type.toString,
-	    zepto = {},
-	    camelize, uniq,
-	    tempParent = document.createElement('div'),
-	    propMap = {
-	      'tabindex': 'tabIndex',
-	      'readonly': 'readOnly',
-	      'for': 'htmlFor',
-	      'class': 'className',
-	      'maxlength': 'maxLength',
-	      'cellspacing': 'cellSpacing',
-	      'cellpadding': 'cellPadding',
-	      'rowspan': 'rowSpan',
-	      'colspan': 'colSpan',
-	      'usemap': 'useMap',
-	      'frameborder': 'frameBorder',
-	      'contenteditable': 'contentEditable'
-	    },
-	    isArray = Array.isArray ||
-	      function(object){ return object instanceof Array }
-
-	  zepto.matches = function(element, selector) {
-	    if (!selector || !element || element.nodeType !== 1) return false
-	    var matchesSelector = element.matches || element.webkitMatchesSelector ||
-	                          element.mozMatchesSelector || element.oMatchesSelector ||
-	                          element.matchesSelector
-	    if (matchesSelector) return matchesSelector.call(element, selector)
-	    // fall back to performing a selector:
-	    var match, parent = element.parentNode, temp = !parent
-	    if (temp) (parent = tempParent).appendChild(element)
-	    match = ~zepto.qsa(parent, selector).indexOf(element)
-	    temp && tempParent.removeChild(element)
-	    return match
-	  }
-
-	  function type(obj) {
-	    return obj == null ? String(obj) :
-	      class2type[toString.call(obj)] || "object"
-	  }
-
-	  function isFunction(value) { return type(value) == "function" }
-	  function isWindow(obj)     { return obj != null && obj == obj.window }
-	  function isDocument(obj)   { return obj != null && obj.nodeType == obj.DOCUMENT_NODE }
-	  function isObject(obj)     { return type(obj) == "object" }
-	  function isPlainObject(obj) {
-	    return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
-	  }
-
-	  function likeArray(obj) {
-	    var length = !!obj && 'length' in obj && obj.length,
-	      type = $.type(obj)
-
-	    return 'function' != type && !isWindow(obj) && (
-	      'array' == type || length === 0 ||
-	        (typeof length == 'number' && length > 0 && (length - 1) in obj)
-	    )
-	  }
-
-	  function compact(array) { return filter.call(array, function(item){ return item != null }) }
-	  function flatten(array) { return array.length > 0 ? $.fn.concat.apply([], array) : array }
-	  camelize = function(str){ return str.replace(/-+(.)?/g, function(match, chr){ return chr ? chr.toUpperCase() : '' }) }
-	  function dasherize(str) {
-	    return str.replace(/::/g, '/')
-	           .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
-	           .replace(/([a-z\d])([A-Z])/g, '$1_$2')
-	           .replace(/_/g, '-')
-	           .toLowerCase()
-	  }
-	  uniq = function(array){ return filter.call(array, function(item, idx){ return array.indexOf(item) == idx }) }
-
-	  function classRE(name) {
-	    return name in classCache ?
-	      classCache[name] : (classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|$)'))
-	  }
-
-	  function maybeAddPx(name, value) {
-	    return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value
-	  }
-
-	  function defaultDisplay(nodeName) {
-	    var element, display
-	    if (!elementDisplay[nodeName]) {
-	      element = document.createElement(nodeName)
-	      document.body.appendChild(element)
-	      display = getComputedStyle(element, '').getPropertyValue("display")
-	      element.parentNode.removeChild(element)
-	      display == "none" && (display = "block")
-	      elementDisplay[nodeName] = display
-	    }
-	    return elementDisplay[nodeName]
-	  }
-
-	  function children(element) {
-	    return 'children' in element ?
-	      slice.call(element.children) :
-	      $.map(element.childNodes, function(node){ if (node.nodeType == 1) return node })
-	  }
-
-	  function Z(dom, selector) {
-	    var i, len = dom ? dom.length : 0
-	    for (i = 0; i < len; i++) this[i] = dom[i]
-	    this.length = len
-	    this.selector = selector || ''
-	  }
-
-	  // `$.zepto.fragment` takes a html string and an optional tag name
-	  // to generate DOM nodes from the given html string.
-	  // The generated DOM nodes are returned as an array.
-	  // This function can be overridden in plugins for example to make
-	  // it compatible with browsers that don't support the DOM fully.
-	  zepto.fragment = function(html, name, properties) {
-	    var dom, nodes, container
-
-	    // A special case optimization for a single tag
-	    if (singleTagRE.test(html)) dom = $(document.createElement(RegExp.$1))
-
-	    if (!dom) {
-	      if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
-	      if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
-	      if (!(name in containers)) name = '*'
-
-	      container = containers[name]
-	      container.innerHTML = '' + html
-	      dom = $.each(slice.call(container.childNodes), function(){
-	        container.removeChild(this)
-	      })
-	    }
-
-	    if (isPlainObject(properties)) {
-	      nodes = $(dom)
-	      $.each(properties, function(key, value) {
-	        if (methodAttributes.indexOf(key) > -1) nodes[key](value)
-	        else nodes.attr(key, value)
-	      })
-	    }
-
-	    return dom
-	  }
-
-	  // `$.zepto.Z` swaps out the prototype of the given `dom` array
-	  // of nodes with `$.fn` and thus supplying all the Zepto functions
-	  // to the array. This method can be overridden in plugins.
-	  zepto.Z = function(dom, selector) {
-	    return new Z(dom, selector)
-	  }
-
-	  // `$.zepto.isZ` should return `true` if the given object is a Zepto
-	  // collection. This method can be overridden in plugins.
-	  zepto.isZ = function(object) {
-	    return object instanceof zepto.Z
-	  }
-
-	  // `$.zepto.init` is Zepto's counterpart to jQuery's `$.fn.init` and
-	  // takes a CSS selector and an optional context (and handles various
-	  // special cases).
-	  // This method can be overridden in plugins.
-	  zepto.init = function(selector, context) {
-	    var dom
-	    // If nothing given, return an empty Zepto collection
-	    if (!selector) return zepto.Z()
-	    // Optimize for string selectors
-	    else if (typeof selector == 'string') {
-	      selector = selector.trim()
-	      // If it's a html fragment, create nodes from it
-	      // Note: In both Chrome 21 and Firefox 15, DOM error 12
-	      // is thrown if the fragment doesn't begin with <
-	      if (selector[0] == '<' && fragmentRE.test(selector))
-	        dom = zepto.fragment(selector, RegExp.$1, context), selector = null
-	      // If there's a context, create a collection on that context first, and select
-	      // nodes from there
-	      else if (context !== undefined) return $(context).find(selector)
-	      // If it's a CSS selector, use it to select nodes.
-	      else dom = zepto.qsa(document, selector)
-	    }
-	    // If a function is given, call it when the DOM is ready
-	    else if (isFunction(selector)) return $(document).ready(selector)
-	    // If a Zepto collection is given, just return it
-	    else if (zepto.isZ(selector)) return selector
-	    else {
-	      // normalize array if an array of nodes is given
-	      if (isArray(selector)) dom = compact(selector)
-	      // Wrap DOM nodes.
-	      else if (isObject(selector))
-	        dom = [selector], selector = null
-	      // If it's a html fragment, create nodes from it
-	      else if (fragmentRE.test(selector))
-	        dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
-	      // If there's a context, create a collection on that context first, and select
-	      // nodes from there
-	      else if (context !== undefined) return $(context).find(selector)
-	      // And last but no least, if it's a CSS selector, use it to select nodes.
-	      else dom = zepto.qsa(document, selector)
-	    }
-	    // create a new Zepto collection from the nodes found
-	    return zepto.Z(dom, selector)
-	  }
-
-	  // `$` will be the base `Zepto` object. When calling this
-	  // function just call `$.zepto.init, which makes the implementation
-	  // details of selecting nodes and creating Zepto collections
-	  // patchable in plugins.
-	  $ = function(selector, context){
-	    return zepto.init(selector, context)
-	  }
-
-	  function extend(target, source, deep) {
-	    for (key in source)
-	      if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
-	        if (isPlainObject(source[key]) && !isPlainObject(target[key]))
-	          target[key] = {}
-	        if (isArray(source[key]) && !isArray(target[key]))
-	          target[key] = []
-	        extend(target[key], source[key], deep)
-	      }
-	      else if (source[key] !== undefined) target[key] = source[key]
-	  }
-
-	  // Copy all but undefined properties from one or more
-	  // objects to the `target` object.
-	  $.extend = function(target){
-	    var deep, args = slice.call(arguments, 1)
-	    if (typeof target == 'boolean') {
-	      deep = target
-	      target = args.shift()
-	    }
-	    args.forEach(function(arg){ extend(target, arg, deep) })
-	    return target
-	  }
-
-	  // `$.zepto.qsa` is Zepto's CSS selector implementation which
-	  // uses `document.querySelectorAll` and optimizes for some special cases, like `#id`.
-	  // This method can be overridden in plugins.
-	  zepto.qsa = function(element, selector){
-	    var found,
-	        maybeID = selector[0] == '#',
-	        maybeClass = !maybeID && selector[0] == '.',
-	        nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, // Ensure that a 1 char tag name still gets checked
-	        isSimple = simpleSelectorRE.test(nameOnly)
-	    return (element.getElementById && isSimple && maybeID) ? // Safari DocumentFragment doesn't have getElementById
-	      ( (found = element.getElementById(nameOnly)) ? [found] : [] ) :
-	      (element.nodeType !== 1 && element.nodeType !== 9 && element.nodeType !== 11) ? [] :
-	      slice.call(
-	        isSimple && !maybeID && element.getElementsByClassName ? // DocumentFragment doesn't have getElementsByClassName/TagName
-	          maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class
-	          element.getElementsByTagName(selector) : // Or a tag
-	          element.querySelectorAll(selector) // Or it's not simple, and we need to query all
-	      )
-	  }
-
-	  function filtered(nodes, selector) {
-	    return selector == null ? $(nodes) : $(nodes).filter(selector)
-	  }
-
-	  $.contains = document.documentElement.contains ?
-	    function(parent, node) {
-	      return parent !== node && parent.contains(node)
-	    } :
-	    function(parent, node) {
-	      while (node && (node = node.parentNode))
-	        if (node === parent) return true
-	      return false
-	    }
-
-	  function funcArg(context, arg, idx, payload) {
-	    return isFunction(arg) ? arg.call(context, idx, payload) : arg
-	  }
-
-	  function setAttribute(node, name, value) {
-	    value == null ? node.removeAttribute(name) : node.setAttribute(name, value)
-	  }
-
-	  // access className property while respecting SVGAnimatedString
-	  function className(node, value){
-	    var klass = node.className || '',
-	        svg   = klass && klass.baseVal !== undefined
-
-	    if (value === undefined) return svg ? klass.baseVal : klass
-	    svg ? (klass.baseVal = value) : (node.className = value)
-	  }
-
-	  // "true"  => true
-	  // "false" => false
-	  // "null"  => null
-	  // "42"    => 42
-	  // "42.5"  => 42.5
-	  // "08"    => "08"
-	  // JSON    => parse if valid
-	  // String  => self
-	  function deserializeValue(value) {
-	    try {
-	      return value ?
-	        value == "true" ||
-	        ( value == "false" ? false :
-	          value == "null" ? null :
-	          +value + "" == value ? +value :
-	          /^[\[\{]/.test(value) ? $.parseJSON(value) :
-	          value )
-	        : value
-	    } catch(e) {
-	      return value
-	    }
-	  }
-
-	  $.type = type
-	  $.isFunction = isFunction
-	  $.isWindow = isWindow
-	  $.isArray = isArray
-	  $.isPlainObject = isPlainObject
-
-	  $.isEmptyObject = function(obj) {
-	    var name
-	    for (name in obj) return false
-	    return true
-	  }
-
-	  $.isNumeric = function(val) {
-	    var num = Number(val), type = typeof val
-	    return val != null && type != 'boolean' &&
-	      (type != 'string' || val.length) &&
-	      !isNaN(num) && isFinite(num) || false
-	  }
-
-	  $.inArray = function(elem, array, i){
-	    return emptyArray.indexOf.call(array, elem, i)
-	  }
-
-	  $.camelCase = camelize
-	  $.trim = function(str) {
-	    return str == null ? "" : String.prototype.trim.call(str)
-	  }
-
-	  // plugin compatibility
-	  $.uuid = 0
-	  $.support = { }
-	  $.expr = { }
-	  $.noop = function() {}
-
-	  $.map = function(elements, callback){
-	    var value, values = [], i, key
-	    if (likeArray(elements))
-	      for (i = 0; i < elements.length; i++) {
-	        value = callback(elements[i], i)
-	        if (value != null) values.push(value)
-	      }
-	    else
-	      for (key in elements) {
-	        value = callback(elements[key], key)
-	        if (value != null) values.push(value)
-	      }
-	    return flatten(values)
-	  }
-
-	  $.each = function(elements, callback){
-	    var i, key
-	    if (likeArray(elements)) {
-	      for (i = 0; i < elements.length; i++)
-	        if (callback.call(elements[i], i, elements[i]) === false) return elements
-	    } else {
-	      for (key in elements)
-	        if (callback.call(elements[key], key, elements[key]) === false) return elements
-	    }
-
-	    return elements
-	  }
-
-	  $.grep = function(elements, callback){
-	    return filter.call(elements, callback)
-	  }
-
-	  if (window.JSON) $.parseJSON = JSON.parse
-
-	  // Populate the class2type map
-	  $.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
-	    class2type[ "[object " + name + "]" ] = name.toLowerCase()
-	  })
-
-	  // Define methods that will be available on all
-	  // Zepto collections
-	  $.fn = {
-	    constructor: zepto.Z,
-	    length: 0,
-
-	    // Because a collection acts like an array
-	    // copy over these useful array functions.
-	    forEach: emptyArray.forEach,
-	    reduce: emptyArray.reduce,
-	    push: emptyArray.push,
-	    sort: emptyArray.sort,
-	    splice: emptyArray.splice,
-	    indexOf: emptyArray.indexOf,
-	    concat: function(){
-	      var i, value, args = []
-	      for (i = 0; i < arguments.length; i++) {
-	        value = arguments[i]
-	        args[i] = zepto.isZ(value) ? value.toArray() : value
-	      }
-	      return concat.apply(zepto.isZ(this) ? this.toArray() : this, args)
-	    },
-
-	    // `map` and `slice` in the jQuery API work differently
-	    // from their array counterparts
-	    map: function(fn){
-	      return $($.map(this, function(el, i){ return fn.call(el, i, el) }))
-	    },
-	    slice: function(){
-	      return $(slice.apply(this, arguments))
-	    },
-
-	    ready: function(callback){
-	      // need to check if document.body exists for IE as that browser reports
-	      // document ready when it hasn't yet created the body element
-	      if (readyRE.test(document.readyState) && document.body) callback($)
-	      else document.addEventListener('DOMContentLoaded', function(){ callback($) }, false)
-	      return this
-	    },
-	    get: function(idx){
-	      return idx === undefined ? slice.call(this) : this[idx >= 0 ? idx : idx + this.length]
-	    },
-	    toArray: function(){ return this.get() },
-	    size: function(){
-	      return this.length
-	    },
-	    remove: function(){
-	      return this.each(function(){
-	        if (this.parentNode != null)
-	          this.parentNode.removeChild(this)
-	      })
-	    },
-	    each: function(callback){
-	      emptyArray.every.call(this, function(el, idx){
-	        return callback.call(el, idx, el) !== false
-	      })
-	      return this
-	    },
-	    filter: function(selector){
-	      if (isFunction(selector)) return this.not(this.not(selector))
-	      return $(filter.call(this, function(element){
-	        return zepto.matches(element, selector)
-	      }))
-	    },
-	    add: function(selector,context){
-	      return $(uniq(this.concat($(selector,context))))
-	    },
-	    is: function(selector){
-	      return this.length > 0 && zepto.matches(this[0], selector)
-	    },
-	    not: function(selector){
-	      var nodes=[]
-	      if (isFunction(selector) && selector.call !== undefined)
-	        this.each(function(idx){
-	          if (!selector.call(this,idx)) nodes.push(this)
-	        })
-	      else {
-	        var excludes = typeof selector == 'string' ? this.filter(selector) :
-	          (likeArray(selector) && isFunction(selector.item)) ? slice.call(selector) : $(selector)
-	        this.forEach(function(el){
-	          if (excludes.indexOf(el) < 0) nodes.push(el)
-	        })
-	      }
-	      return $(nodes)
-	    },
-	    has: function(selector){
-	      return this.filter(function(){
-	        return isObject(selector) ?
-	          $.contains(this, selector) :
-	          $(this).find(selector).size()
-	      })
-	    },
-	    eq: function(idx){
-	      return idx === -1 ? this.slice(idx) : this.slice(idx, + idx + 1)
-	    },
-	    first: function(){
-	      var el = this[0]
-	      return el && !isObject(el) ? el : $(el)
-	    },
-	    last: function(){
-	      var el = this[this.length - 1]
-	      return el && !isObject(el) ? el : $(el)
-	    },
-	    find: function(selector){
-	      var result, $this = this
-	      if (!selector) result = $()
-	      else if (typeof selector == 'object')
-	        result = $(selector).filter(function(){
-	          var node = this
-	          return emptyArray.some.call($this, function(parent){
-	            return $.contains(parent, node)
-	          })
-	        })
-	      else if (this.length == 1) result = $(zepto.qsa(this[0], selector))
-	      else result = this.map(function(){ return zepto.qsa(this, selector) })
-	      return result
-	    },
-	    closest: function(selector, context){
-	      var nodes = [], collection = typeof selector == 'object' && $(selector)
-	      this.each(function(_, node){
-	        while (node && !(collection ? collection.indexOf(node) >= 0 : zepto.matches(node, selector)))
-	          node = node !== context && !isDocument(node) && node.parentNode
-	        if (node && nodes.indexOf(node) < 0) nodes.push(node)
-	      })
-	      return $(nodes)
-	    },
-	    parents: function(selector){
-	      var ancestors = [], nodes = this
-	      while (nodes.length > 0)
-	        nodes = $.map(nodes, function(node){
-	          if ((node = node.parentNode) && !isDocument(node) && ancestors.indexOf(node) < 0) {
-	            ancestors.push(node)
-	            return node
-	          }
-	        })
-	      return filtered(ancestors, selector)
-	    },
-	    parent: function(selector){
-	      return filtered(uniq(this.pluck('parentNode')), selector)
-	    },
-	    children: function(selector){
-	      return filtered(this.map(function(){ return children(this) }), selector)
-	    },
-	    contents: function() {
-	      return this.map(function() { return this.contentDocument || slice.call(this.childNodes) })
-	    },
-	    siblings: function(selector){
-	      return filtered(this.map(function(i, el){
-	        return filter.call(children(el.parentNode), function(child){ return child!==el })
-	      }), selector)
-	    },
-	    empty: function(){
-	      return this.each(function(){ this.innerHTML = '' })
-	    },
-	    // `pluck` is borrowed from Prototype.js
-	    pluck: function(property){
-	      return $.map(this, function(el){ return el[property] })
-	    },
-	    show: function(){
-	      return this.each(function(){
-	        this.style.display == "none" && (this.style.display = '')
-	        if (getComputedStyle(this, '').getPropertyValue("display") == "none")
-	          this.style.display = defaultDisplay(this.nodeName)
-	      })
-	    },
-	    replaceWith: function(newContent){
-	      return this.before(newContent).remove()
-	    },
-	    wrap: function(structure){
-	      var func = isFunction(structure)
-	      if (this[0] && !func)
-	        var dom   = $(structure).get(0),
-	            clone = dom.parentNode || this.length > 1
-
-	      return this.each(function(index){
-	        $(this).wrapAll(
-	          func ? structure.call(this, index) :
-	            clone ? dom.cloneNode(true) : dom
-	        )
-	      })
-	    },
-	    wrapAll: function(structure){
-	      if (this[0]) {
-	        $(this[0]).before(structure = $(structure))
-	        var children
-	        // drill down to the inmost element
-	        while ((children = structure.children()).length) structure = children.first()
-	        $(structure).append(this)
-	      }
-	      return this
-	    },
-	    wrapInner: function(structure){
-	      var func = isFunction(structure)
-	      return this.each(function(index){
-	        var self = $(this), contents = self.contents(),
-	            dom  = func ? structure.call(this, index) : structure
-	        contents.length ? contents.wrapAll(dom) : self.append(dom)
-	      })
-	    },
-	    unwrap: function(){
-	      this.parent().each(function(){
-	        $(this).replaceWith($(this).children())
-	      })
-	      return this
-	    },
-	    clone: function(){
-	      return this.map(function(){ return this.cloneNode(true) })
-	    },
-	    hide: function(){
-	      return this.css("display", "none")
-	    },
-	    toggle: function(setting){
-	      return this.each(function(){
-	        var el = $(this)
-	        ;(setting === undefined ? el.css("display") == "none" : setting) ? el.show() : el.hide()
-	      })
-	    },
-	    prev: function(selector){ return $(this.pluck('previousElementSibling')).filter(selector || '*') },
-	    next: function(selector){ return $(this.pluck('nextElementSibling')).filter(selector || '*') },
-	    html: function(html){
-	      return 0 in arguments ?
-	        this.each(function(idx){
-	          var originHtml = this.innerHTML
-	          $(this).empty().append( funcArg(this, html, idx, originHtml) )
-	        }) :
-	        (0 in this ? this[0].innerHTML : null)
-	    },
-	    text: function(text){
-	      return 0 in arguments ?
-	        this.each(function(idx){
-	          var newText = funcArg(this, text, idx, this.textContent)
-	          this.textContent = newText == null ? '' : ''+newText
-	        }) :
-	        (0 in this ? this.pluck('textContent').join("") : null)
-	    },
-	    attr: function(name, value){
-	      var result
-	      return (typeof name == 'string' && !(1 in arguments)) ?
-	        (0 in this && this[0].nodeType == 1 && (result = this[0].getAttribute(name)) != null ? result : undefined) :
-	        this.each(function(idx){
-	          if (this.nodeType !== 1) return
-	          if (isObject(name)) for (key in name) setAttribute(this, key, name[key])
-	          else setAttribute(this, name, funcArg(this, value, idx, this.getAttribute(name)))
-	        })
-	    },
-	    removeAttr: function(name){
-	      return this.each(function(){ this.nodeType === 1 && name.split(' ').forEach(function(attribute){
-	        setAttribute(this, attribute)
-	      }, this)})
-	    },
-	    prop: function(name, value){
-	      name = propMap[name] || name
-	      return (1 in arguments) ?
-	        this.each(function(idx){
-	          this[name] = funcArg(this, value, idx, this[name])
-	        }) :
-	        (this[0] && this[0][name])
-	    },
-	    removeProp: function(name){
-	      name = propMap[name] || name
-	      return this.each(function(){ delete this[name] })
-	    },
-	    data: function(name, value){
-	      var attrName = 'data-' + name.replace(capitalRE, '-$1').toLowerCase()
-
-	      var data = (1 in arguments) ?
-	        this.attr(attrName, value) :
-	        this.attr(attrName)
-
-	      return data !== null ? deserializeValue(data) : undefined
-	    },
-	    val: function(value){
-	      if (0 in arguments) {
-	        if (value == null) value = ""
-	        return this.each(function(idx){
-	          this.value = funcArg(this, value, idx, this.value)
-	        })
-	      } else {
-	        return this[0] && (this[0].multiple ?
-	           $(this[0]).find('option').filter(function(){ return this.selected }).pluck('value') :
-	           this[0].value)
-	      }
-	    },
-	    offset: function(coordinates){
-	      if (coordinates) return this.each(function(index){
-	        var $this = $(this),
-	            coords = funcArg(this, coordinates, index, $this.offset()),
-	            parentOffset = $this.offsetParent().offset(),
-	            props = {
-	              top:  coords.top  - parentOffset.top,
-	              left: coords.left - parentOffset.left
-	            }
-
-	        if ($this.css('position') == 'static') props['position'] = 'relative'
-	        $this.css(props)
-	      })
-	      if (!this.length) return null
-	      if (document.documentElement !== this[0] && !$.contains(document.documentElement, this[0]))
-	        return {top: 0, left: 0}
-	      var obj = this[0].getBoundingClientRect()
-	      return {
-	        left: obj.left + window.pageXOffset,
-	        top: obj.top + window.pageYOffset,
-	        width: Math.round(obj.width),
-	        height: Math.round(obj.height)
-	      }
-	    },
-	    css: function(property, value){
-	      if (arguments.length < 2) {
-	        var element = this[0]
-	        if (typeof property == 'string') {
-	          if (!element) return
-	          return element.style[camelize(property)] || getComputedStyle(element, '').getPropertyValue(property)
-	        } else if (isArray(property)) {
-	          if (!element) return
-	          var props = {}
-	          var computedStyle = getComputedStyle(element, '')
-	          $.each(property, function(_, prop){
-	            props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
-	          })
-	          return props
-	        }
-	      }
-
-	      var css = ''
-	      if (type(property) == 'string') {
-	        if (!value && value !== 0)
-	          this.each(function(){ this.style.removeProperty(dasherize(property)) })
-	        else
-	          css = dasherize(property) + ":" + maybeAddPx(property, value)
-	      } else {
-	        for (key in property)
-	          if (!property[key] && property[key] !== 0)
-	            this.each(function(){ this.style.removeProperty(dasherize(key)) })
-	          else
-	            css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
-	      }
-
-	      return this.each(function(){ this.style.cssText += ';' + css })
-	    },
-	    index: function(element){
-	      return element ? this.indexOf($(element)[0]) : this.parent().children().indexOf(this[0])
-	    },
-	    hasClass: function(name){
-	      if (!name) return false
-	      return emptyArray.some.call(this, function(el){
-	        return this.test(className(el))
-	      }, classRE(name))
-	    },
-	    addClass: function(name){
-	      if (!name) return this
-	      return this.each(function(idx){
-	        if (!('className' in this)) return
-	        classList = []
-	        var cls = className(this), newName = funcArg(this, name, idx, cls)
-	        newName.split(/\s+/g).forEach(function(klass){
-	          if (!$(this).hasClass(klass)) classList.push(klass)
-	        }, this)
-	        classList.length && className(this, cls + (cls ? " " : "") + classList.join(" "))
-	      })
-	    },
-	    removeClass: function(name){
-	      return this.each(function(idx){
-	        if (!('className' in this)) return
-	        if (name === undefined) return className(this, '')
-	        classList = className(this)
-	        funcArg(this, name, idx, classList).split(/\s+/g).forEach(function(klass){
-	          classList = classList.replace(classRE(klass), " ")
-	        })
-	        className(this, classList.trim())
-	      })
-	    },
-	    toggleClass: function(name, when){
-	      if (!name) return this
-	      return this.each(function(idx){
-	        var $this = $(this), names = funcArg(this, name, idx, className(this))
-	        names.split(/\s+/g).forEach(function(klass){
-	          (when === undefined ? !$this.hasClass(klass) : when) ?
-	            $this.addClass(klass) : $this.removeClass(klass)
-	        })
-	      })
-	    },
-	    scrollTop: function(value){
-	      if (!this.length) return
-	      var hasScrollTop = 'scrollTop' in this[0]
-	      if (value === undefined) return hasScrollTop ? this[0].scrollTop : this[0].pageYOffset
-	      return this.each(hasScrollTop ?
-	        function(){ this.scrollTop = value } :
-	        function(){ this.scrollTo(this.scrollX, value) })
-	    },
-	    scrollLeft: function(value){
-	      if (!this.length) return
-	      var hasScrollLeft = 'scrollLeft' in this[0]
-	      if (value === undefined) return hasScrollLeft ? this[0].scrollLeft : this[0].pageXOffset
-	      return this.each(hasScrollLeft ?
-	        function(){ this.scrollLeft = value } :
-	        function(){ this.scrollTo(value, this.scrollY) })
-	    },
-	    position: function() {
-	      if (!this.length) return
-
-	      var elem = this[0],
-	        // Get *real* offsetParent
-	        offsetParent = this.offsetParent(),
-	        // Get correct offsets
-	        offset       = this.offset(),
-	        parentOffset = rootNodeRE.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset()
-
-	      // Subtract element margins
-	      // note: when an element has margin: auto the offsetLeft and marginLeft
-	      // are the same in Safari causing offset.left to incorrectly be 0
-	      offset.top  -= parseFloat( $(elem).css('margin-top') ) || 0
-	      offset.left -= parseFloat( $(elem).css('margin-left') ) || 0
-
-	      // Add offsetParent borders
-	      parentOffset.top  += parseFloat( $(offsetParent[0]).css('border-top-width') ) || 0
-	      parentOffset.left += parseFloat( $(offsetParent[0]).css('border-left-width') ) || 0
-
-	      // Subtract the two offsets
-	      return {
-	        top:  offset.top  - parentOffset.top,
-	        left: offset.left - parentOffset.left
-	      }
-	    },
-	    offsetParent: function() {
-	      return this.map(function(){
-	        var parent = this.offsetParent || document.body
-	        while (parent && !rootNodeRE.test(parent.nodeName) && $(parent).css("position") == "static")
-	          parent = parent.offsetParent
-	        return parent
-	      })
-	    }
-	  }
-
-	  // for now
-	  $.fn.detach = $.fn.remove
-
-	  // Generate the `width` and `height` functions
-	  ;['width', 'height'].forEach(function(dimension){
-	    var dimensionProperty =
-	      dimension.replace(/./, function(m){ return m[0].toUpperCase() })
-
-	    $.fn[dimension] = function(value){
-	      var offset, el = this[0]
-	      if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
-	        isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
-	        (offset = this.offset()) && offset[dimension]
-	      else return this.each(function(idx){
-	        el = $(this)
-	        el.css(dimension, funcArg(this, value, idx, el[dimension]()))
-	      })
-	    }
-	  })
-
-	  function traverseNode(node, fun) {
-	    fun(node)
-	    for (var i = 0, len = node.childNodes.length; i < len; i++)
-	      traverseNode(node.childNodes[i], fun)
-	  }
-
-	  // Generate the `after`, `prepend`, `before`, `append`,
-	  // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
-	  adjacencyOperators.forEach(function(operator, operatorIndex) {
-	    var inside = operatorIndex % 2 //=> prepend, append
-
-	    $.fn[operator] = function(){
-	      // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
-	      var argType, nodes = $.map(arguments, function(arg) {
-	            var arr = []
-	            argType = type(arg)
-	            if (argType == "array") {
-	              arg.forEach(function(el) {
-	                if (el.nodeType !== undefined) return arr.push(el)
-	                else if ($.zepto.isZ(el)) return arr = arr.concat(el.get())
-	                arr = arr.concat(zepto.fragment(el))
-	              })
-	              return arr
-	            }
-	            return argType == "object" || arg == null ?
-	              arg : zepto.fragment(arg)
-	          }),
-	          parent, copyByClone = this.length > 1
-	      if (nodes.length < 1) return this
-
-	      return this.each(function(_, target){
-	        parent = inside ? target : target.parentNode
-
-	        // convert all methods to a "before" operation
-	        target = operatorIndex == 0 ? target.nextSibling :
-	                 operatorIndex == 1 ? target.firstChild :
-	                 operatorIndex == 2 ? target :
-	                 null
-
-	        var parentInDocument = $.contains(document.documentElement, parent)
-
-	        nodes.forEach(function(node){
-	          if (copyByClone) node = node.cloneNode(true)
-	          else if (!parent) return $(node).remove()
-
-	          parent.insertBefore(node, target)
-	          if (parentInDocument) traverseNode(node, function(el){
-	            if (el.nodeName != null && el.nodeName.toUpperCase() === 'SCRIPT' &&
-	               (!el.type || el.type === 'text/javascript') && !el.src){
-	              var target = el.ownerDocument ? el.ownerDocument.defaultView : window
-	              target['eval'].call(target, el.innerHTML)
-	            }
-	          })
-	        })
-	      })
-	    }
-
-	    // after    => insertAfter
-	    // prepend  => prependTo
-	    // before   => insertBefore
-	    // append   => appendTo
-	    $.fn[inside ? operator+'To' : 'insert'+(operatorIndex ? 'Before' : 'After')] = function(html){
-	      $(html)[operator](this)
-	      return this
-	    }
-	  })
-
-	  zepto.Z.prototype = Z.prototype = $.fn
-
-	  // Export internal API functions in the `$.zepto` namespace
-	  zepto.uniq = uniq
-	  zepto.deserializeValue = deserializeValue
-	  $.zepto = zepto
-
-	  return $
-	})()
-
-	module.exports = Zepto;
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//     Zepto.js
-	//     (c) 2010-2016 Thomas Fuchs
-	//     Zepto.js may be freely distributed under the MIT license.
-
-	var Zepto = __webpack_require__(5);
-
-	;(function($){
-	  var _zid = 1, undefined,
-	      slice = Array.prototype.slice,
-	      isFunction = $.isFunction,
-	      isString = function(obj){ return typeof obj == 'string' },
-	      handlers = {},
-	      specialEvents={},
-	      focusinSupported = 'onfocusin' in window,
-	      focus = { focus: 'focusin', blur: 'focusout' },
-	      hover = { mouseenter: 'mouseover', mouseleave: 'mouseout' }
-
-	  specialEvents.click = specialEvents.mousedown = specialEvents.mouseup = specialEvents.mousemove = 'MouseEvents'
-
-	  function zid(element) {
-	    return element._zid || (element._zid = _zid++)
-	  }
-	  function findHandlers(element, event, fn, selector) {
-	    event = parse(event)
-	    if (event.ns) var matcher = matcherFor(event.ns)
-	    return (handlers[zid(element)] || []).filter(function(handler) {
-	      return handler
-	        && (!event.e  || handler.e == event.e)
-	        && (!event.ns || matcher.test(handler.ns))
-	        && (!fn       || zid(handler.fn) === zid(fn))
-	        && (!selector || handler.sel == selector)
-	    })
-	  }
-	  function parse(event) {
-	    var parts = ('' + event).split('.')
-	    return {e: parts[0], ns: parts.slice(1).sort().join(' ')}
-	  }
-	  function matcherFor(ns) {
-	    return new RegExp('(?:^| )' + ns.replace(' ', ' .* ?') + '(?: |$)')
-	  }
-
-	  function eventCapture(handler, captureSetting) {
-	    return handler.del &&
-	      (!focusinSupported && (handler.e in focus)) ||
-	      !!captureSetting
-	  }
-
-	  function realEvent(type) {
-	    return hover[type] || (focusinSupported && focus[type]) || type
-	  }
-
-	  function add(element, events, fn, data, selector, delegator, capture){
-	    var id = zid(element), set = (handlers[id] || (handlers[id] = []))
-	    events.split(/\s/).forEach(function(event){
-	      if (event == 'ready') return $(document).ready(fn)
-	      var handler   = parse(event)
-	      handler.fn    = fn
-	      handler.sel   = selector
-	      // emulate mouseenter, mouseleave
-	      if (handler.e in hover) fn = function(e){
-	        var related = e.relatedTarget
-	        if (!related || (related !== this && !$.contains(this, related)))
-	          return handler.fn.apply(this, arguments)
-	      }
-	      handler.del   = delegator
-	      var callback  = delegator || fn
-	      handler.proxy = function(e){
-	        e = compatible(e)
-	        if (e.isImmediatePropagationStopped()) return
-	        e.data = data
-	        var result = callback.apply(element, e._args == undefined ? [e] : [e].concat(e._args))
-	        if (result === false) e.preventDefault(), e.stopPropagation()
-	        return result
-	      }
-	      handler.i = set.length
-	      set.push(handler)
-	      if ('addEventListener' in element)
-	        element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
-	    })
-	  }
-	  function remove(element, events, fn, selector, capture){
-	    var id = zid(element)
-	    ;(events || '').split(/\s/).forEach(function(event){
-	      findHandlers(element, event, fn, selector).forEach(function(handler){
-	        delete handlers[id][handler.i]
-	      if ('removeEventListener' in element)
-	        element.removeEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
-	      })
-	    })
-	  }
-
-	  $.event = { add: add, remove: remove }
-
-	  $.proxy = function(fn, context) {
-	    var args = (2 in arguments) && slice.call(arguments, 2)
-	    if (isFunction(fn)) {
-	      var proxyFn = function(){ return fn.apply(context, args ? args.concat(slice.call(arguments)) : arguments) }
-	      proxyFn._zid = zid(fn)
-	      return proxyFn
-	    } else if (isString(context)) {
-	      if (args) {
-	        args.unshift(fn[context], fn)
-	        return $.proxy.apply(null, args)
-	      } else {
-	        return $.proxy(fn[context], fn)
-	      }
-	    } else {
-	      throw new TypeError("expected function")
-	    }
-	  }
-
-	  $.fn.bind = function(event, data, callback){
-	    return this.on(event, data, callback)
-	  }
-	  $.fn.unbind = function(event, callback){
-	    return this.off(event, callback)
-	  }
-	  $.fn.one = function(event, selector, data, callback){
-	    return this.on(event, selector, data, callback, 1)
-	  }
-
-	  var returnTrue = function(){return true},
-	      returnFalse = function(){return false},
-	      ignoreProperties = /^([A-Z]|returnValue$|layer[XY]$|webkitMovement[XY]$)/,
-	      eventMethods = {
-	        preventDefault: 'isDefaultPrevented',
-	        stopImmediatePropagation: 'isImmediatePropagationStopped',
-	        stopPropagation: 'isPropagationStopped'
-	      }
-
-	  function compatible(event, source) {
-	    if (source || !event.isDefaultPrevented) {
-	      source || (source = event)
-
-	      $.each(eventMethods, function(name, predicate) {
-	        var sourceMethod = source[name]
-	        event[name] = function(){
-	          this[predicate] = returnTrue
-	          return sourceMethod && sourceMethod.apply(source, arguments)
-	        }
-	        event[predicate] = returnFalse
-	      })
-
-	      try {
-	        event.timeStamp || (event.timeStamp = Date.now())
-	      } catch (ignored) { }
-
-	      if (source.defaultPrevented !== undefined ? source.defaultPrevented :
-	          'returnValue' in source ? source.returnValue === false :
-	          source.getPreventDefault && source.getPreventDefault())
-	        event.isDefaultPrevented = returnTrue
-	    }
-	    return event
-	  }
-
-	  function createProxy(event) {
-	    var key, proxy = { originalEvent: event }
-	    for (key in event)
-	      if (!ignoreProperties.test(key) && event[key] !== undefined) proxy[key] = event[key]
-
-	    return compatible(proxy, event)
-	  }
-
-	  $.fn.delegate = function(selector, event, callback){
-	    return this.on(event, selector, callback)
-	  }
-	  $.fn.undelegate = function(selector, event, callback){
-	    return this.off(event, selector, callback)
-	  }
-
-	  $.fn.live = function(event, callback){
-	    $(document.body).delegate(this.selector, event, callback)
-	    return this
-	  }
-	  $.fn.die = function(event, callback){
-	    $(document.body).undelegate(this.selector, event, callback)
-	    return this
-	  }
-
-	  $.fn.on = function(event, selector, data, callback, one){
-	    var autoRemove, delegator, $this = this
-	    if (event && !isString(event)) {
-	      $.each(event, function(type, fn){
-	        $this.on(type, selector, data, fn, one)
-	      })
-	      return $this
-	    }
-
-	    if (!isString(selector) && !isFunction(callback) && callback !== false)
-	      callback = data, data = selector, selector = undefined
-	    if (callback === undefined || data === false)
-	      callback = data, data = undefined
-
-	    if (callback === false) callback = returnFalse
-
-	    return $this.each(function(_, element){
-	      if (one) autoRemove = function(e){
-	        remove(element, e.type, callback)
-	        return callback.apply(this, arguments)
-	      }
-
-	      if (selector) delegator = function(e){
-	        var evt, match = $(e.target).closest(selector, element).get(0)
-	        if (match && match !== element) {
-	          evt = $.extend(createProxy(e), {currentTarget: match, liveFired: element})
-	          return (autoRemove || callback).apply(match, [evt].concat(slice.call(arguments, 1)))
-	        }
-	      }
-
-	      add(element, event, callback, data, selector, delegator || autoRemove)
-	    })
-	  }
-	  $.fn.off = function(event, selector, callback){
-	    var $this = this
-	    if (event && !isString(event)) {
-	      $.each(event, function(type, fn){
-	        $this.off(type, selector, fn)
-	      })
-	      return $this
-	    }
-
-	    if (!isString(selector) && !isFunction(callback) && callback !== false)
-	      callback = selector, selector = undefined
-
-	    if (callback === false) callback = returnFalse
-
-	    return $this.each(function(){
-	      remove(this, event, callback, selector)
-	    })
-	  }
-
-	  $.fn.trigger = function(event, args){
-	    event = (isString(event) || $.isPlainObject(event)) ? $.Event(event) : compatible(event)
-	    event._args = args
-	    return this.each(function(){
-	      // handle focus(), blur() by calling them directly
-	      if (event.type in focus && typeof this[event.type] == "function") this[event.type]()
-	      // items in the collection might not be DOM elements
-	      else if ('dispatchEvent' in this) this.dispatchEvent(event)
-	      else $(this).triggerHandler(event, args)
-	    })
-	  }
-
-	  // triggers event handlers on current element just as if an event occurred,
-	  // doesn't trigger an actual event, doesn't bubble
-	  $.fn.triggerHandler = function(event, args){
-	    var e, result
-	    this.each(function(i, element){
-	      e = createProxy(isString(event) ? $.Event(event) : event)
-	      e._args = args
-	      e.target = element
-	      $.each(findHandlers(element, event.type || event), function(i, handler){
-	        result = handler.proxy(e)
-	        if (e.isImmediatePropagationStopped()) return false
-	      })
-	    })
-	    return result
-	  }
-
-	  // shortcut methods for `.bind(event, fn)` for each event type
-	  ;('focusin focusout focus blur load resize scroll unload click dblclick '+
-	  'mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave '+
-	  'change select keydown keypress keyup error').split(' ').forEach(function(event) {
-	    $.fn[event] = function(callback) {
-	      return (0 in arguments) ?
-	        this.bind(event, callback) :
-	        this.trigger(event)
-	    }
-	  })
-
-	  $.Event = function(type, props) {
-	    if (!isString(type)) props = type, type = props.type
-	    var event = document.createEvent(specialEvents[type] || 'Events'), bubbles = true
-	    if (props) for (var name in props) (name == 'bubbles') ? (bubbles = !!props[name]) : (event[name] = props[name])
-	    event.initEvent(type, bubbles, true)
-	    return compatible(event)
-	  }
-
-	})(Zepto)
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//     Zepto.js
-	//     (c) 2010-2016 Thomas Fuchs
-	//     Zepto.js may be freely distributed under the MIT license.
-
-	var Zepto = __webpack_require__(5);
-
-	;(function($){
-	  var jsonpID = +new Date(),
-	      document = window.document,
-	      key,
-	      name,
-	      rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-	      scriptTypeRE = /^(?:text|application)\/javascript/i,
-	      xmlTypeRE = /^(?:text|application)\/xml/i,
-	      jsonType = 'application/json',
-	      htmlType = 'text/html',
-	      blankRE = /^\s*$/,
-	      originAnchor = document.createElement('a')
-
-	  originAnchor.href = window.location.href
-
-	  // trigger a custom event and return false if it was cancelled
-	  function triggerAndReturn(context, eventName, data) {
-	    var event = $.Event(eventName)
-	    $(context).trigger(event, data)
-	    return !event.isDefaultPrevented()
-	  }
-
-	  // trigger an Ajax "global" event
-	  function triggerGlobal(settings, context, eventName, data) {
-	    if (settings.global) return triggerAndReturn(context || document, eventName, data)
-	  }
-
-	  // Number of active Ajax requests
-	  $.active = 0
-
-	  function ajaxStart(settings) {
-	    if (settings.global && $.active++ === 0) triggerGlobal(settings, null, 'ajaxStart')
-	  }
-	  function ajaxStop(settings) {
-	    if (settings.global && !(--$.active)) triggerGlobal(settings, null, 'ajaxStop')
-	  }
-
-	  // triggers an extra global event "ajaxBeforeSend" that's like "ajaxSend" but cancelable
-	  function ajaxBeforeSend(xhr, settings) {
-	    var context = settings.context
-	    if (settings.beforeSend.call(context, xhr, settings) === false ||
-	        triggerGlobal(settings, context, 'ajaxBeforeSend', [xhr, settings]) === false)
-	      return false
-
-	    triggerGlobal(settings, context, 'ajaxSend', [xhr, settings])
-	  }
-	  function ajaxSuccess(data, xhr, settings, deferred) {
-	    var context = settings.context, status = 'success'
-	    settings.success.call(context, data, status, xhr)
-	    if (deferred) deferred.resolveWith(context, [data, status, xhr])
-	    triggerGlobal(settings, context, 'ajaxSuccess', [xhr, settings, data])
-	    ajaxComplete(status, xhr, settings)
-	  }
-	  // type: "timeout", "error", "abort", "parsererror"
-	  function ajaxError(error, type, xhr, settings, deferred) {
-	    var context = settings.context
-	    settings.error.call(context, xhr, type, error)
-	    if (deferred) deferred.rejectWith(context, [xhr, type, error])
-	    triggerGlobal(settings, context, 'ajaxError', [xhr, settings, error || type])
-	    ajaxComplete(type, xhr, settings)
-	  }
-	  // status: "success", "notmodified", "error", "timeout", "abort", "parsererror"
-	  function ajaxComplete(status, xhr, settings) {
-	    var context = settings.context
-	    settings.complete.call(context, xhr, status)
-	    triggerGlobal(settings, context, 'ajaxComplete', [xhr, settings])
-	    ajaxStop(settings)
-	  }
-
-	  function ajaxDataFilter(data, type, settings) {
-	    if (settings.dataFilter == empty) return data
-	    var context = settings.context
-	    return settings.dataFilter.call(context, data, type)
-	  }
-
-	  // Empty function, used as default callback
-	  function empty() {}
-
-	  $.ajaxJSONP = function(options, deferred){
-	    if (!('type' in options)) return $.ajax(options)
-
-	    var _callbackName = options.jsonpCallback,
-	      callbackName = ($.isFunction(_callbackName) ?
-	        _callbackName() : _callbackName) || ('Zepto' + (jsonpID++)),
-	      script = document.createElement('script'),
-	      originalCallback = window[callbackName],
-	      responseData,
-	      abort = function(errorType) {
-	        $(script).triggerHandler('error', errorType || 'abort')
-	      },
-	      xhr = { abort: abort }, abortTimeout
-
-	    if (deferred) deferred.promise(xhr)
-
-	    $(script).on('load error', function(e, errorType){
-	      clearTimeout(abortTimeout)
-	      $(script).off().remove()
-
-	      if (e.type == 'error' || !responseData) {
-	        ajaxError(null, errorType || 'error', xhr, options, deferred)
-	      } else {
-	        ajaxSuccess(responseData[0], xhr, options, deferred)
-	      }
-
-	      window[callbackName] = originalCallback
-	      if (responseData && $.isFunction(originalCallback))
-	        originalCallback(responseData[0])
-
-	      originalCallback = responseData = undefined
-	    })
-
-	    if (ajaxBeforeSend(xhr, options) === false) {
-	      abort('abort')
-	      return xhr
-	    }
-
-	    window[callbackName] = function(){
-	      responseData = arguments
-	    }
-
-	    script.src = options.url.replace(/\?(.+)=\?/, '?$1=' + callbackName)
-	    document.head.appendChild(script)
-
-	    if (options.timeout > 0) abortTimeout = setTimeout(function(){
-	      abort('timeout')
-	    }, options.timeout)
-
-	    return xhr
-	  }
-
-	  $.ajaxSettings = {
-	    // Default type of request
-	    type: 'GET',
-	    // Callback that is executed before request
-	    beforeSend: empty,
-	    // Callback that is executed if the request succeeds
-	    success: empty,
-	    // Callback that is executed the the server drops error
-	    error: empty,
-	    // Callback that is executed on request complete (both: error and success)
-	    complete: empty,
-	    // The context for the callbacks
-	    context: null,
-	    // Whether to trigger "global" Ajax events
-	    global: true,
-	    // Transport
-	    xhr: function () {
-	      return new window.XMLHttpRequest()
-	    },
-	    // MIME types mapping
-	    // IIS returns Javascript as "application/x-javascript"
-	    accepts: {
-	      script: 'text/javascript, application/javascript, application/x-javascript',
-	      json:   jsonType,
-	      xml:    'application/xml, text/xml',
-	      html:   htmlType,
-	      text:   'text/plain'
-	    },
-	    // Whether the request is to another domain
-	    crossDomain: false,
-	    // Default timeout
-	    timeout: 0,
-	    // Whether data should be serialized to string
-	    processData: true,
-	    // Whether the browser should be allowed to cache GET responses
-	    cache: true,
-	    //Used to handle the raw response data of XMLHttpRequest.
-	    //This is a pre-filtering function to sanitize the response.
-	    //The sanitized response should be returned
-	    dataFilter: empty
-	  }
-
-	  function mimeToDataType(mime) {
-	    if (mime) mime = mime.split(';', 2)[0]
-	    return mime && ( mime == htmlType ? 'html' :
-	      mime == jsonType ? 'json' :
-	      scriptTypeRE.test(mime) ? 'script' :
-	      xmlTypeRE.test(mime) && 'xml' ) || 'text'
-	  }
-
-	  function appendQuery(url, query) {
-	    if (query == '') return url
-	    return (url + '&' + query).replace(/[&?]{1,2}/, '?')
-	  }
-
-	  // serialize payload and append it to the URL for GET requests
-	  function serializeData(options) {
-	    if (options.processData && options.data && $.type(options.data) != "string")
-	      options.data = $.param(options.data, options.traditional)
-	    if (options.data && (!options.type || options.type.toUpperCase() == 'GET' || 'jsonp' == options.dataType))
-	      options.url = appendQuery(options.url, options.data), options.data = undefined
-	  }
-
-	  $.ajax = function(options){
-	    var settings = $.extend({}, options || {}),
-	        deferred = $.Deferred && $.Deferred(),
-	        urlAnchor, hashIndex
-	    for (key in $.ajaxSettings) if (settings[key] === undefined) settings[key] = $.ajaxSettings[key]
-
-	    ajaxStart(settings)
-
-	    if (!settings.crossDomain) {
-	      urlAnchor = document.createElement('a')
-	      urlAnchor.href = settings.url
-	      // cleans up URL for .href (IE only), see https://github.com/madrobby/zepto/pull/1049
-	      urlAnchor.href = urlAnchor.href
-	      settings.crossDomain = (originAnchor.protocol + '//' + originAnchor.host) !== (urlAnchor.protocol + '//' + urlAnchor.host)
-	    }
-
-	    if (!settings.url) settings.url = window.location.toString()
-	    if ((hashIndex = settings.url.indexOf('#')) > -1) settings.url = settings.url.slice(0, hashIndex)
-	    serializeData(settings)
-
-	    var dataType = settings.dataType, hasPlaceholder = /\?.+=\?/.test(settings.url)
-	    if (hasPlaceholder) dataType = 'jsonp'
-
-	    if (settings.cache === false || (
-	         (!options || options.cache !== true) &&
-	         ('script' == dataType || 'jsonp' == dataType)
-	        ))
-	      settings.url = appendQuery(settings.url, '_=' + Date.now())
-
-	    if ('jsonp' == dataType) {
-	      if (!hasPlaceholder)
-	        settings.url = appendQuery(settings.url,
-	          settings.jsonp ? (settings.jsonp + '=?') : settings.jsonp === false ? '' : 'callback=?')
-	      return $.ajaxJSONP(settings, deferred)
-	    }
-
-	    var mime = settings.accepts[dataType],
-	        headers = { },
-	        setHeader = function(name, value) { headers[name.toLowerCase()] = [name, value] },
-	        protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
-	        xhr = settings.xhr(),
-	        nativeSetHeader = xhr.setRequestHeader,
-	        abortTimeout
-
-	    if (deferred) deferred.promise(xhr)
-
-	    if (!settings.crossDomain) setHeader('X-Requested-With', 'XMLHttpRequest')
-	    setHeader('Accept', mime || '*/*')
-	    if (mime = settings.mimeType || mime) {
-	      if (mime.indexOf(',') > -1) mime = mime.split(',', 2)[0]
-	      xhr.overrideMimeType && xhr.overrideMimeType(mime)
-	    }
-	    if (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() != 'GET'))
-	      setHeader('Content-Type', settings.contentType || 'application/x-www-form-urlencoded')
-
-	    if (settings.headers) for (name in settings.headers) setHeader(name, settings.headers[name])
-	    xhr.setRequestHeader = setHeader
-
-	    xhr.onreadystatechange = function(){
-	      if (xhr.readyState == 4) {
-	        xhr.onreadystatechange = empty
-	        clearTimeout(abortTimeout)
-	        var result, error = false
-	        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && protocol == 'file:')) {
-	          dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'))
-
-	          if (xhr.responseType == 'arraybuffer' || xhr.responseType == 'blob')
-	            result = xhr.response
-	          else {
-	            result = xhr.responseText
-
-	            try {
-	              // http://perfectionkills.com/global-eval-what-are-the-options/
-	              // sanitize response accordingly if data filter callback provided
-	              result = ajaxDataFilter(result, dataType, settings)
-	              if (dataType == 'script')    (1,eval)(result)
-	              else if (dataType == 'xml')  result = xhr.responseXML
-	              else if (dataType == 'json') result = blankRE.test(result) ? null : $.parseJSON(result)
-	            } catch (e) { error = e }
-
-	            if (error) return ajaxError(error, 'parsererror', xhr, settings, deferred)
-	          }
-
-	          ajaxSuccess(result, xhr, settings, deferred)
-	        } else {
-	          ajaxError(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr, settings, deferred)
-	        }
-	      }
-	    }
-
-	    if (ajaxBeforeSend(xhr, settings) === false) {
-	      xhr.abort()
-	      ajaxError(null, 'abort', xhr, settings, deferred)
-	      return xhr
-	    }
-
-	    var async = 'async' in settings ? settings.async : true
-	    xhr.open(settings.type, settings.url, async, settings.username, settings.password)
-
-	    if (settings.xhrFields) for (name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
-
-	    for (name in headers) nativeSetHeader.apply(xhr, headers[name])
-
-	    if (settings.timeout > 0) abortTimeout = setTimeout(function(){
-	        xhr.onreadystatechange = empty
-	        xhr.abort()
-	        ajaxError(null, 'timeout', xhr, settings, deferred)
-	      }, settings.timeout)
-
-	    // avoid sending empty string (#319)
-	    xhr.send(settings.data ? settings.data : null)
-	    return xhr
-	  }
-
-	  // handle optional data/success arguments
-	  function parseArguments(url, data, success, dataType) {
-	    if ($.isFunction(data)) dataType = success, success = data, data = undefined
-	    if (!$.isFunction(success)) dataType = success, success = undefined
-	    return {
-	      url: url
-	    , data: data
-	    , success: success
-	    , dataType: dataType
-	    }
-	  }
-
-	  $.get = function(/* url, data, success, dataType */){
-	    return $.ajax(parseArguments.apply(null, arguments))
-	  }
-
-	  $.post = function(/* url, data, success, dataType */){
-	    var options = parseArguments.apply(null, arguments)
-	    options.type = 'POST'
-	    return $.ajax(options)
-	  }
-
-	  $.getJSON = function(/* url, data, success */){
-	    var options = parseArguments.apply(null, arguments)
-	    options.dataType = 'json'
-	    return $.ajax(options)
-	  }
-
-	  $.fn.load = function(url, data, success){
-	    if (!this.length) return this
-	    var self = this, parts = url.split(/\s/), selector,
-	        options = parseArguments(url, data, success),
-	        callback = options.success
-	    if (parts.length > 1) options.url = parts[0], selector = parts[1]
-	    options.success = function(response){
-	      self.html(selector ?
-	        $('<div>').html(response.replace(rscript, "")).find(selector)
-	        : response)
-	      callback && callback.apply(self, arguments)
-	    }
-	    $.ajax(options)
-	    return this
-	  }
-
-	  var escape = encodeURIComponent
-
-	  function serialize(params, obj, traditional, scope){
-	    var type, array = $.isArray(obj), hash = $.isPlainObject(obj)
-	    $.each(obj, function(key, value) {
-	      type = $.type(value)
-	      if (scope) key = traditional ? scope :
-	        scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
-	      // handle data in serializeArray() format
-	      if (!scope && array) params.add(value.name, value.value)
-	      // recurse into nested objects
-	      else if (type == "array" || (!traditional && type == "object"))
-	        serialize(params, value, traditional, key)
-	      else params.add(key, value)
-	    })
-	  }
-
-	  $.param = function(obj, traditional){
-	    var params = []
-	    params.add = function(key, value) {
-	      if ($.isFunction(value)) value = value()
-	      if (value == null) value = ""
-	      this.push(escape(key) + '=' + escape(value))
-	    }
-	    serialize(params, obj, traditional)
-	    return params.join('&').replace(/%20/g, '+')
-	  }
-	})(Zepto)
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//     Zepto.js
-	//     (c) 2010-2016 Thomas Fuchs
-	//     Zepto.js may be freely distributed under the MIT license.
-
-	var Zepto = __webpack_require__(5);
-
-	;(function($){
-	  var touch = {},
-	    touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
-	    longTapDelay = 750,
-	    gesture
-
-	  function swipeDirection(x1, x2, y1, y2) {
-	    return Math.abs(x1 - x2) >=
-	      Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down')
-	  }
-
-	  function longTap() {
-	    longTapTimeout = null
-	    if (touch.last) {
-	      touch.el.trigger('longTap')
-	      touch = {}
-	    }
-	  }
-
-	  function cancelLongTap() {
-	    if (longTapTimeout) clearTimeout(longTapTimeout)
-	    longTapTimeout = null
-	  }
-
-	  function cancelAll() {
-	    if (touchTimeout) clearTimeout(touchTimeout)
-	    if (tapTimeout) clearTimeout(tapTimeout)
-	    if (swipeTimeout) clearTimeout(swipeTimeout)
-	    if (longTapTimeout) clearTimeout(longTapTimeout)
-	    touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null
-	    touch = {}
-	  }
-
-	  function isPrimaryTouch(event){
-	    return (event.pointerType == 'touch' ||
-	      event.pointerType == event.MSPOINTER_TYPE_TOUCH)
-	      && event.isPrimary
-	  }
-
-	  function isPointerEventType(e, type){
-	    return (e.type == 'pointer'+type ||
-	      e.type.toLowerCase() == 'mspointer'+type)
-	  }
-
-	  $(document).ready(function(){
-	    var now, delta, deltaX = 0, deltaY = 0, firstTouch, _isPointerType
-
-	    if ('MSGesture' in window) {
-	      gesture = new MSGesture()
-	      gesture.target = document.body
-	    }
-
-	    $(document)
-	      .bind('MSGestureEnd', function(e){
-	        var swipeDirectionFromVelocity =
-	          e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null
-	        if (swipeDirectionFromVelocity) {
-	          touch.el.trigger('swipe')
-	          touch.el.trigger('swipe'+ swipeDirectionFromVelocity)
-	        }
-	      })
-	      .on('touchstart MSPointerDown pointerdown', function(e){
-	        if((_isPointerType = isPointerEventType(e, 'down')) &&
-	          !isPrimaryTouch(e)) return
-	        firstTouch = _isPointerType ? e : e.touches[0]
-	        if (e.touches && e.touches.length === 1 && touch.x2) {
-	          // Clear out touch movement data if we have it sticking around
-	          // This can occur if touchcancel doesn't fire due to preventDefault, etc.
-	          touch.x2 = undefined
-	          touch.y2 = undefined
-	        }
-	        now = Date.now()
-	        delta = now - (touch.last || now)
-	        touch.el = $('tagName' in firstTouch.target ?
-	          firstTouch.target : firstTouch.target.parentNode)
-	        touchTimeout && clearTimeout(touchTimeout)
-	        touch.x1 = firstTouch.pageX
-	        touch.y1 = firstTouch.pageY
-	        if (delta > 0 && delta <= 250) touch.isDoubleTap = true
-	        touch.last = now
-	        longTapTimeout = setTimeout(longTap, longTapDelay)
-	        // adds the current touch contact for IE gesture recognition
-	        if (gesture && _isPointerType) gesture.addPointer(e.pointerId)
-	      })
-	      .on('touchmove MSPointerMove pointermove', function(e){
-	        if((_isPointerType = isPointerEventType(e, 'move')) &&
-	          !isPrimaryTouch(e)) return
-	        firstTouch = _isPointerType ? e : e.touches[0]
-	        cancelLongTap()
-	        touch.x2 = firstTouch.pageX
-	        touch.y2 = firstTouch.pageY
-
-	        deltaX += Math.abs(touch.x1 - touch.x2)
-	        deltaY += Math.abs(touch.y1 - touch.y2)
-	      })
-	      .on('touchend MSPointerUp pointerup', function(e){
-	        if((_isPointerType = isPointerEventType(e, 'up')) &&
-	          !isPrimaryTouch(e)) return
-	        cancelLongTap()
-
-	        // swipe
-	        if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) ||
-	            (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
-
-	          swipeTimeout = setTimeout(function() {
-	            if (touch.el){
-	              touch.el.trigger('swipe')
-	              touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
-	            }
-	            touch = {}
-	          }, 0)
-
-	        // normal tap
-	        else if ('last' in touch)
-	          // don't fire tap when delta position changed by more than 30 pixels,
-	          // for instance when moving to a point and back to origin
-	          if (deltaX < 30 && deltaY < 30) {
-	            // delay by one tick so we can cancel the 'tap' event if 'scroll' fires
-	            // ('tap' fires before 'scroll')
-	            tapTimeout = setTimeout(function() {
-
-	              // trigger universal 'tap' with the option to cancelTouch()
-	              // (cancelTouch cancels processing of single vs double taps for faster 'tap' response)
-	              var event = $.Event('tap')
-	              event.cancelTouch = cancelAll
-	              // [by paper] fix -> "TypeError: 'undefined' is not an object (evaluating 'touch.el.trigger'), when double tap
-	              if (touch.el) touch.el.trigger(event)
-
-	              // trigger double tap immediately
-	              if (touch.isDoubleTap) {
-	                if (touch.el) touch.el.trigger('doubleTap')
-	                touch = {}
-	              }
-
-	              // trigger single tap after 250ms of inactivity
-	              else {
-	                touchTimeout = setTimeout(function(){
-	                  touchTimeout = null
-	                  if (touch.el) touch.el.trigger('singleTap')
-	                  touch = {}
-	                }, 250)
-	              }
-	            }, 0)
-	          } else {
-	            touch = {}
-	          }
-	          deltaX = deltaY = 0
-
-	      })
-	      // when the browser window loses focus,
-	      // for example when a modal dialog is shown,
-	      // cancel all ongoing events
-	      .on('touchcancel MSPointerCancel pointercancel', cancelAll)
-
-	    // scrolling the window indicates intention of the user
-	    // to scroll, not tap or swipe, so cancel all ongoing events
-	    $(window).on('scroll', cancelAll)
-	  })
-
-	  ;['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
-	    'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(function(eventName){
-	    $.fn[eventName] = function(callback){ return this.on(eventName, callback) }
-	  })
-	})(Zepto)
-
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*! iScroll v5.2.0 ~ (c) 2008-2016 Matteo Spinelli ~ http://cubiq.org/license */
@@ -4519,6 +2521,2224 @@
 	}
 
 	})(window, document, Math);
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	function swiperAnimateCache() {
+	  for (allBoxes = window.document.documentElement.querySelectorAll(".ani"), i = 0; i < allBoxes.length; i++) allBoxes[i].attributes["style"] ? allBoxes[i].setAttribute("swiper-animate-style-cache", allBoxes[i].attributes["style"].value) : allBoxes[i].setAttribute("swiper-animate-style-cache", " "),
+	    allBoxes[i].style.visibility = "hidden"
+	}
+	function swiperAnimate(a) {
+	  clearSwiperAnimate();
+	  var b = a.slides[a.activeIndex].querySelectorAll(".ani");
+	  for (i = 0; i < b.length; i++) b[i].style.visibility = "visible",
+	    effect = b[i].attributes["swiper-animate-effect"] ? b[i].attributes["swiper-animate-effect"].value : "",
+	    b[i].className = b[i].className + "  " + effect + " " + "animated",
+	    style = b[i].attributes["style"].value,
+	    duration = b[i].attributes["swiper-animate-duration"] ? b[i].attributes["swiper-animate-duration"].value : "",
+	    duration && (style = style + "animation-duration:" + duration + ";-webkit-animation-duration:" + duration + ";"),
+	    delay = b[i].attributes["swiper-animate-delay"] ? b[i].attributes["swiper-animate-delay"].value : "",
+	    delay && (style = style + "animation-delay:" + delay + ";-webkit-animation-delay:" + delay + ";"),
+	    b[i].setAttribute("style", style)
+	}
+	function clearSwiperAnimate() {
+	  for (allBoxes = window.document.documentElement.querySelectorAll(".ani"), i = 0; i < allBoxes.length; i++) allBoxes[i].attributes["swiper-animate-style-cache"] && allBoxes[i].setAttribute("style", allBoxes[i].attributes["swiper-animate-style-cache"].value),
+	    allBoxes[i].style.visibility = "hidden",
+	    allBoxes[i].className = allBoxes[i].className.replace("animated", " "),
+	    allBoxes[i].attributes["swiper-animate-effect"] && (effect = allBoxes[i].attributes["swiper-animate-effect"].value, allBoxes[i].className = allBoxes[i].className.replace(effect, " "))
+	}
+
+	module.exports = {
+	  swiperAnimateCache: swiperAnimateCache,
+	  swiperAnimate: swiperAnimate,
+	  clearSwiperAnimate: clearSwiperAnimate
+	}
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	!function (a, b) {
+	    module.exports = b(a)
+	}(window, function (a, b) {
+	    function c(b, c, d) {
+	        a.WeixinJSBridge ? WeixinJSBridge.invoke(b, e(c), function (a) {
+	            g(b, a, d)
+	        }) : j(b, d)
+	    }
+
+	    function d(b, c, d) {
+	        a.WeixinJSBridge ? WeixinJSBridge.on(b, function (a) {
+	            d && d.trigger && d.trigger(a), g(b, a, c)
+	        }) : d ? j(b, d) : j(b, c)
+	    }
+
+	    function e(a) {
+	        return a = a || {}, a.appId = z.appId, a.verifyAppId = z.appId, a.verifySignType = "sha1", a.verifyTimestamp = z.timestamp + "", a.verifyNonceStr = z.nonceStr, a.verifySignature = z.signature, a
+	    }
+
+	    function f(a) {
+	        return {
+	            timeStamp: a.timestamp + "",
+	            nonceStr: a.nonceStr,
+	            "package": a.package,
+	            paySign: a.paySign,
+	            signType: a.signType || "SHA1"
+	        }
+	    }
+
+	    function g(a, b, c) {
+	        var d, e, f;
+	        switch (delete b.err_code, delete b.err_desc, delete b.err_detail, d = b.errMsg, d || (d = b.err_msg, delete b.err_msg, d = h(a, d, c), b.errMsg = d), c = c || {}, c._complete && (c._complete(b), delete c._complete), d = b.errMsg || "", z.debug && !c.isInnerInvoke && alert(JSON.stringify(b)), e = d.indexOf(":"), f = d.substring(e + 1)) {
+	            case"ok":
+	                c.success && c.success(b);
+	                break;
+	            case"cancel":
+	                c.cancel && c.cancel(b);
+	                break;
+	            default:
+	                c.fail && c.fail(b)
+	        }
+	        c.complete && c.complete(b)
+	    }
+
+	    function h(a, b) {
+	        var d, e, f, g;
+	        if (b) {
+	            switch (d = b.indexOf(":"), a) {
+	                case o.config:
+	                    e = "config";
+	                    break;
+	                case o.openProductSpecificView:
+	                    e = "openProductSpecificView";
+	                    break;
+	                default:
+	                    e = b.substring(0, d), e = e.replace(/_/g, " "), e = e.replace(/\b\w+\b/g, function (a) {
+	                        return a.substring(0, 1).toUpperCase() + a.substring(1)
+	                    }), e = e.substring(0, 1).toLowerCase() + e.substring(1), e = e.replace(/ /g, ""), -1 != e.indexOf("Wcpay") && (e = e.replace("Wcpay", "WCPay")), f = p[e], f && (e = f)
+	            }
+	            g = b.substring(d + 1), "confirm" == g && (g = "ok"), "failed" == g && (g = "fail"), -1 != g.indexOf("failed_") && (g = g.substring(7)), -1 != g.indexOf("fail_") && (g = g.substring(5)), g = g.replace(/_/g, " "), g = g.toLowerCase(), ("access denied" == g || "no permission to execute" == g) && (g = "permission denied"), "config" == e && "function not exist" == g && (g = "ok"), b = e + ":" + g
+	        }
+	        return b
+	    }
+
+	    function i(a) {
+	        var b, c, d, e;
+	        if (a) {
+	            for (b = 0, c = a.length; c > b; ++b)d = a[b], e = o[d], e && (a[b] = e);
+	            return a
+	        }
+	    }
+
+	    function j(a, b) {
+	        if (!(!z.debug || b && b.isInnerInvoke)) {
+	            var c = p[a];
+	            c && (a = c), b && b._complete && delete b._complete, console.log('"' + a + '",', b || "")
+	        }
+	    }
+
+	    function k() {
+	        if (!("6.0.2" > w || y.systemType < 0)) {
+	            var b = new Image;
+	            y.appId = z.appId, y.initTime = x.initEndTime - x.initStartTime, y.preVerifyTime = x.preVerifyEndTime - x.preVerifyStartTime, C.getNetworkType({
+	                isInnerInvoke: !0,
+	                success: function (a) {
+	                    y.networkType = a.networkType;
+	                    var c = "https://open.weixin.qq.com/sdk/report?v=" + y.version + "&o=" + y.isPreVerifyOk + "&s=" + y.systemType + "&c=" + y.clientVersion + "&a=" + y.appId + "&n=" + y.networkType + "&i=" + y.initTime + "&p=" + y.preVerifyTime + "&u=" + y.url;
+	                    b.src = c
+	                }
+	            })
+	        }
+	    }
+
+	    function l() {
+	        return (new Date).getTime()
+	    }
+
+	    function m(b) {
+	        t && (a.WeixinJSBridge ? b() : q.addEventListener && q.addEventListener("WeixinJSBridgeReady", b, !1))
+	    }
+
+	    function n() {
+	        C.invoke || (C.invoke = function (b, c, d) {
+	            a.WeixinJSBridge && WeixinJSBridge.invoke(b, e(c), d)
+	        }, C.on = function (b, c) {
+	            a.WeixinJSBridge && WeixinJSBridge.on(b, c)
+	        })
+	    }
+
+	    var o, p, q, r, s, t, u, v, w, x, y, z, A, B, C;
+	    if (!a.jWeixin)return o = {
+	        config: "preVerifyJSAPI",
+	        onMenuShareTimeline: "menu:share:timeline",
+	        onMenuShareAppMessage: "menu:share:appmessage",
+	        onMenuShareQQ: "menu:share:qq",
+	        onMenuShareWeibo: "menu:share:weiboApp",
+	        onMenuShareQZone: "menu:share:QZone",
+	        previewImage: "imagePreview",
+	        getLocation: "geoLocation",
+	        openProductSpecificView: "openProductViewWithPid",
+	        addCard: "batchAddCard",
+	        openCard: "batchViewCard",
+	        chooseWXPay: "getBrandWCPayRequest"
+	    }, p = function () {
+	        var b, a = {};
+	        for (b in o)a[o[b]] = b;
+	        return a
+	    }(), q = a.document,
+	        r = q.title,
+	        s = navigator.userAgent.toLowerCase(), t = -1 != s.indexOf("micromessenger"), u = -1 != s.indexOf("android"), v = -1 != s.indexOf("iphone") || -1 != s.indexOf("ipad"), w = function () {
+	        var a = s.match(/micromessenger\/(\d+\.\d+\.\d+)/) || s.match(/micromessenger\/(\d+\.\d+)/);
+	        return a ? a[1] : ""
+	    }(), x = {initStartTime: l(), initEndTime: 0, preVerifyStartTime: 0, preVerifyEndTime: 0}, y = {
+	        version: 1,
+	        appId: "",
+	        initTime: 0,
+	        preVerifyTime: 0,
+	        networkType: "",
+	        isPreVerifyOk: 1,
+	        systemType: v ? 1 : u ? 2 : -1,
+	        clientVersion: w,
+	        url: encodeURIComponent(location.href)
+	    }, z = {}, A = {_completes: []}, B = {state: 0, res: {}}, m(function () {
+	        x.initEndTime = l()
+	    }), C = {
+	        config: function (a) {
+	            z = a, j("config", a);
+	            var b = z.check === !1 ? !1 : !0;
+	            m(function () {
+	                var a, d, e;
+	                if (b)c(o.config, {verifyJsApiList: i(z.jsApiList)}, function () {
+	                    A._complete = function (a) {
+	                        x.preVerifyEndTime = l(), B.state = 1, B.res = a
+	                    }, A.success = function () {
+	                        y.isPreVerifyOk = 0
+	                    }, A.fail = function (a) {
+	                        A._fail ? A._fail(a) : B.state = -1
+	                    };
+	                    var a = A._completes;
+	                    return a.push(function () {
+	                        z.debug || k()
+	                    }), A.complete = function () {
+	                        for (var c = 0, d = a.length; d > c; ++c)a[c]();
+	                        A._completes = []
+	                    }, A
+	                }()), x.preVerifyStartTime = l(); else {
+	                    for (B.state = 1, a = A._completes, d = 0, e = a.length; e > d; ++d)a[d]();
+	                    A._completes = []
+	                }
+	            }), z.beta && n()
+	        }, ready: function (a) {
+	            0 != B.state ? a() : (A._completes.push(a), !t && z.debug && a())
+	        }, error: function (a) {
+	            "6.0.2" > w || (-1 == B.state ? a(B.res) : A._fail = a)
+	        }, checkJsApi: function (a) {
+	            var b = function (a) {
+	                var c, d, b = a.checkResult;
+	                for (c in b)d = p[c], d && (b[d] = b[c], delete b[c]);
+	                return a
+	            };
+	            c("checkJsApi", {jsApiList: i(a.jsApiList)}, function () {
+	                return a._complete = function (a) {
+	                    if (u) {
+	                        var c = a.checkResult;
+	                        c && (a.checkResult = JSON.parse(c))
+	                    }
+	                    a = b(a)
+	                }, a
+	            }())
+	        }, onMenuShareTimeline: function (a) {
+	            d(o.onMenuShareTimeline, {
+	                complete: function () {
+	                    c("shareTimeline", {
+	                        title: a.title || r,
+	                        desc: a.title || r,
+	                        img_url: a.imgUrl || "",
+	                        link: a.link || location.href
+	                    }, a)
+	                }
+	            }, a)
+	        }, onMenuShareAppMessage: function (a) {
+	            d(o.onMenuShareAppMessage, {
+	                complete: function () {
+	                    c("sendAppMessage", {
+	                        title: a.title || r,
+	                        desc: a.desc || "",
+	                        link: a.link || location.href,
+	                        img_url: a.imgUrl || "",
+	                        type: a.type || "link",
+	                        data_url: a.dataUrl || ""
+	                    }, a)
+	                }
+	            }, a)
+	        }, onMenuShareQQ: function (a) {
+	            d(o.onMenuShareQQ, {
+	                complete: function () {
+	                    c("shareQQ", {
+	                        title: a.title || r,
+	                        desc: a.desc || "",
+	                        img_url: a.imgUrl || "",
+	                        link: a.link || location.href
+	                    }, a)
+	                }
+	            }, a)
+	        }, onMenuShareWeibo: function (a) {
+	            d(o.onMenuShareWeibo, {
+	                complete: function () {
+	                    c("shareWeiboApp", {
+	                        title: a.title || r,
+	                        desc: a.desc || "",
+	                        img_url: a.imgUrl || "",
+	                        link: a.link || location.href
+	                    }, a)
+	                }
+	            }, a)
+	        }, onMenuShareQZone: function (a) {
+	            d(o.onMenuShareQZone, {
+	                complete: function () {
+	                    c("shareQZone", {
+	                        title: a.title || r,
+	                        desc: a.desc || "",
+	                        img_url: a.imgUrl || "",
+	                        link: a.link || location.href
+	                    }, a)
+	                }
+	            }, a)
+	        }, startRecord: function (a) {
+	            c("startRecord", {}, a)
+	        }, stopRecord: function (a) {
+	            c("stopRecord", {}, a)
+	        }, onVoiceRecordEnd: function (a) {
+	            d("onVoiceRecordEnd", a)
+	        }, playVoice: function (a) {
+	            c("playVoice", {localId: a.localId}, a)
+	        }, pauseVoice: function (a) {
+	            c("pauseVoice", {localId: a.localId}, a)
+	        }, stopVoice: function (a) {
+	            c("stopVoice", {localId: a.localId}, a)
+	        }, onVoicePlayEnd: function (a) {
+	            d("onVoicePlayEnd", a)
+	        }, uploadVoice: function (a) {
+	            c("uploadVoice", {localId: a.localId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
+	        }, downloadVoice: function (a) {
+	            c("downloadVoice", {serverId: a.serverId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
+	        }, translateVoice: function (a) {
+	            c("translateVoice", {localId: a.localId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
+	        }, chooseImage: function (a) {
+	            c("chooseImage", {
+	                scene: "1|2",
+	                count: a.count || 9,
+	                sizeType: a.sizeType || ["original", "compressed"],
+	                sourceType: a.sourceType || ["album", "camera"]
+	            }, function () {
+	                return a._complete = function (a) {
+	                    if (u) {
+	                        var b = a.localIds;
+	                        b && (a.localIds = JSON.parse(b))
+	                    }
+	                }, a
+	            }())
+	        }, previewImage: function (a) {
+	            c(o.previewImage, {current: a.current, urls: a.urls}, a)
+	        }, uploadImage: function (a) {
+	            c("uploadImage", {localId: a.localId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
+	        }, downloadImage: function (a) {
+	            c("downloadImage", {serverId: a.serverId, isShowProgressTips: 0 == a.isShowProgressTips ? 0 : 1}, a)
+	        }, getNetworkType: function (a) {
+	            var b = function (a) {
+	                var c, d, e, b = a.errMsg;
+	                if (a.errMsg = "getNetworkType:ok", c = a.subtype, delete a.subtype, c)a.networkType = c; else switch (d = b.indexOf(":"), e = b.substring(d + 1)) {
+	                    case"wifi":
+	                    case"edge":
+	                    case"wwan":
+	                        a.networkType = e;
+	                        break;
+	                    default:
+	                        a.errMsg = "getNetworkType:fail"
+	                }
+	                return a
+	            };
+	            c("getNetworkType", {}, function () {
+	                return a._complete = function (a) {
+	                    a = b(a)
+	                }, a
+	            }())
+	        }, openLocation: function (a) {
+	            c("openLocation", {
+	                latitude: a.latitude,
+	                longitude: a.longitude,
+	                name: a.name || "",
+	                address: a.address || "",
+	                scale: a.scale || 28,
+	                infoUrl: a.infoUrl || ""
+	            }, a)
+	        }, getLocation: function (a) {
+	            a = a || {}, c(o.getLocation, {type: a.type || "wgs84"}, function () {
+	                return a._complete = function (a) {
+	                    delete a.type
+	                }, a
+	            }())
+	        }, hideOptionMenu: function (a) {
+	            c("hideOptionMenu", {}, a)
+	        }, showOptionMenu: function (a) {
+	            c("showOptionMenu", {}, a)
+	        }, closeWindow: function (a) {
+	            a = a || {}, c("closeWindow", {immediate_close: a.immediateClose || 0}, a)
+	        }, hideMenuItems: function (a) {
+	            c("hideMenuItems", {menuList: a.menuList}, a)
+	        }, showMenuItems: function (a) {
+	            c("showMenuItems", {menuList: a.menuList}, a)
+	        }, hideAllNonBaseMenuItem: function (a) {
+	            c("hideAllNonBaseMenuItem", {}, a)
+	        }, showAllNonBaseMenuItem: function (a) {
+	            c("showAllNonBaseMenuItem", {}, a)
+	        }, scanQRCode: function (a) {
+	            a = a || {}, c("scanQRCode", {
+	                needResult: a.needResult || 0,
+	                scanType: a.scanType || ["qrCode", "barCode"]
+	            }, function () {
+	                return a._complete = function (a) {
+	                    var b, c;
+	                    v && (b = a.resultStr, b && (c = JSON.parse(b), a.resultStr = c && c.scan_code && c.scan_code.scan_result))
+	                }, a
+	            }())
+	        }, openProductSpecificView: function (a) {
+	            c(o.openProductSpecificView, {pid: a.productId, view_type: a.viewType || 0}, a)
+	        }, addCard: function (a) {
+	            var e, f, g, h, b = a.cardList, d = [];
+	            for (e = 0, f = b.length; f > e; ++e)g = b[e], h = {card_id: g.cardId, card_ext: g.cardExt}, d.push(h);
+	            c(o.addCard, {card_list: d}, function () {
+	                return a._complete = function (a) {
+	                    var c, d, e, b = a.card_list;
+	                    if (b) {
+	                        for (b = JSON.parse(b), c = 0, d = b.length; d > c; ++c)e = b[c], e.cardId = e.card_id, e.cardExt = e.card_ext, e.isSuccess = e.is_succ ? !0 : !1, delete e.card_id, delete e.card_ext, delete e.is_succ;
+	                        a.cardList = b, delete a.card_list
+	                    }
+	                }, a
+	            }())
+	        }, chooseCard: function (a) {
+	            c("chooseCard", {
+	                app_id: z.appId,
+	                location_id: a.shopId || "",
+	                sign_type: a.signType || "SHA1",
+	                card_id: a.cardId || "",
+	                card_type: a.cardType || "",
+	                card_sign: a.cardSign,
+	                time_stamp: a.timestamp + "",
+	                nonce_str: a.nonceStr
+	            }, function () {
+	                return a._complete = function (a) {
+	                    a.cardList = a.choose_card_info, delete a.choose_card_info
+	                }, a
+	            }())
+	        }, openCard: function (a) {
+	            var e, f, g, h, b = a.cardList, d = [];
+	            for (e = 0, f = b.length; f > e; ++e)g = b[e], h = {card_id: g.cardId, code: g.code}, d.push(h);
+	            c(o.openCard, {card_list: d}, a)
+	        }, chooseWXPay: function (a) {
+	            c(o.chooseWXPay, f(a), a)
+	        }
+	    }, b && (a.wx = a.jWeixin = C), C
+	});
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	//     Zepto.js
+	//     (c) 2010-2016 Thomas Fuchs
+	//     Zepto.js may be freely distributed under the MIT license.
+
+	var Zepto = (function() {
+	  var undefined, key, $, classList, emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filter, slice = emptyArray.slice,
+	    document = window.document,
+	    elementDisplay = {}, classCache = {},
+	    cssNumber = { 'column-count': 1, 'columns': 1, 'font-weight': 1, 'line-height': 1,'opacity': 1, 'z-index': 1, 'zoom': 1 },
+	    fragmentRE = /^\s*<(\w+|!)[^>]*>/,
+	    singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+	    tagExpanderRE = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
+	    rootNodeRE = /^(?:body|html)$/i,
+	    capitalRE = /([A-Z])/g,
+
+	    // special attributes that should be get/set via method calls
+	    methodAttributes = ['val', 'css', 'html', 'text', 'data', 'width', 'height', 'offset'],
+
+	    adjacencyOperators = [ 'after', 'prepend', 'before', 'append' ],
+	    table = document.createElement('table'),
+	    tableRow = document.createElement('tr'),
+	    containers = {
+	      'tr': document.createElement('tbody'),
+	      'tbody': table, 'thead': table, 'tfoot': table,
+	      'td': tableRow, 'th': tableRow,
+	      '*': document.createElement('div')
+	    },
+	    readyRE = /complete|loaded|interactive/,
+	    simpleSelectorRE = /^[\w-]*$/,
+	    class2type = {},
+	    toString = class2type.toString,
+	    zepto = {},
+	    camelize, uniq,
+	    tempParent = document.createElement('div'),
+	    propMap = {
+	      'tabindex': 'tabIndex',
+	      'readonly': 'readOnly',
+	      'for': 'htmlFor',
+	      'class': 'className',
+	      'maxlength': 'maxLength',
+	      'cellspacing': 'cellSpacing',
+	      'cellpadding': 'cellPadding',
+	      'rowspan': 'rowSpan',
+	      'colspan': 'colSpan',
+	      'usemap': 'useMap',
+	      'frameborder': 'frameBorder',
+	      'contenteditable': 'contentEditable'
+	    },
+	    isArray = Array.isArray ||
+	      function(object){ return object instanceof Array }
+
+	  zepto.matches = function(element, selector) {
+	    if (!selector || !element || element.nodeType !== 1) return false
+	    var matchesSelector = element.matches || element.webkitMatchesSelector ||
+	                          element.mozMatchesSelector || element.oMatchesSelector ||
+	                          element.matchesSelector
+	    if (matchesSelector) return matchesSelector.call(element, selector)
+	    // fall back to performing a selector:
+	    var match, parent = element.parentNode, temp = !parent
+	    if (temp) (parent = tempParent).appendChild(element)
+	    match = ~zepto.qsa(parent, selector).indexOf(element)
+	    temp && tempParent.removeChild(element)
+	    return match
+	  }
+
+	  function type(obj) {
+	    return obj == null ? String(obj) :
+	      class2type[toString.call(obj)] || "object"
+	  }
+
+	  function isFunction(value) { return type(value) == "function" }
+	  function isWindow(obj)     { return obj != null && obj == obj.window }
+	  function isDocument(obj)   { return obj != null && obj.nodeType == obj.DOCUMENT_NODE }
+	  function isObject(obj)     { return type(obj) == "object" }
+	  function isPlainObject(obj) {
+	    return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
+	  }
+
+	  function likeArray(obj) {
+	    var length = !!obj && 'length' in obj && obj.length,
+	      type = $.type(obj)
+
+	    return 'function' != type && !isWindow(obj) && (
+	      'array' == type || length === 0 ||
+	        (typeof length == 'number' && length > 0 && (length - 1) in obj)
+	    )
+	  }
+
+	  function compact(array) { return filter.call(array, function(item){ return item != null }) }
+	  function flatten(array) { return array.length > 0 ? $.fn.concat.apply([], array) : array }
+	  camelize = function(str){ return str.replace(/-+(.)?/g, function(match, chr){ return chr ? chr.toUpperCase() : '' }) }
+	  function dasherize(str) {
+	    return str.replace(/::/g, '/')
+	           .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+	           .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+	           .replace(/_/g, '-')
+	           .toLowerCase()
+	  }
+	  uniq = function(array){ return filter.call(array, function(item, idx){ return array.indexOf(item) == idx }) }
+
+	  function classRE(name) {
+	    return name in classCache ?
+	      classCache[name] : (classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|$)'))
+	  }
+
+	  function maybeAddPx(name, value) {
+	    return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value
+	  }
+
+	  function defaultDisplay(nodeName) {
+	    var element, display
+	    if (!elementDisplay[nodeName]) {
+	      element = document.createElement(nodeName)
+	      document.body.appendChild(element)
+	      display = getComputedStyle(element, '').getPropertyValue("display")
+	      element.parentNode.removeChild(element)
+	      display == "none" && (display = "block")
+	      elementDisplay[nodeName] = display
+	    }
+	    return elementDisplay[nodeName]
+	  }
+
+	  function children(element) {
+	    return 'children' in element ?
+	      slice.call(element.children) :
+	      $.map(element.childNodes, function(node){ if (node.nodeType == 1) return node })
+	  }
+
+	  function Z(dom, selector) {
+	    var i, len = dom ? dom.length : 0
+	    for (i = 0; i < len; i++) this[i] = dom[i]
+	    this.length = len
+	    this.selector = selector || ''
+	  }
+
+	  // `$.zepto.fragment` takes a html string and an optional tag name
+	  // to generate DOM nodes from the given html string.
+	  // The generated DOM nodes are returned as an array.
+	  // This function can be overridden in plugins for example to make
+	  // it compatible with browsers that don't support the DOM fully.
+	  zepto.fragment = function(html, name, properties) {
+	    var dom, nodes, container
+
+	    // A special case optimization for a single tag
+	    if (singleTagRE.test(html)) dom = $(document.createElement(RegExp.$1))
+
+	    if (!dom) {
+	      if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
+	      if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
+	      if (!(name in containers)) name = '*'
+
+	      container = containers[name]
+	      container.innerHTML = '' + html
+	      dom = $.each(slice.call(container.childNodes), function(){
+	        container.removeChild(this)
+	      })
+	    }
+
+	    if (isPlainObject(properties)) {
+	      nodes = $(dom)
+	      $.each(properties, function(key, value) {
+	        if (methodAttributes.indexOf(key) > -1) nodes[key](value)
+	        else nodes.attr(key, value)
+	      })
+	    }
+
+	    return dom
+	  }
+
+	  // `$.zepto.Z` swaps out the prototype of the given `dom` array
+	  // of nodes with `$.fn` and thus supplying all the Zepto functions
+	  // to the array. This method can be overridden in plugins.
+	  zepto.Z = function(dom, selector) {
+	    return new Z(dom, selector)
+	  }
+
+	  // `$.zepto.isZ` should return `true` if the given object is a Zepto
+	  // collection. This method can be overridden in plugins.
+	  zepto.isZ = function(object) {
+	    return object instanceof zepto.Z
+	  }
+
+	  // `$.zepto.init` is Zepto's counterpart to jQuery's `$.fn.init` and
+	  // takes a CSS selector and an optional context (and handles various
+	  // special cases).
+	  // This method can be overridden in plugins.
+	  zepto.init = function(selector, context) {
+	    var dom
+	    // If nothing given, return an empty Zepto collection
+	    if (!selector) return zepto.Z()
+	    // Optimize for string selectors
+	    else if (typeof selector == 'string') {
+	      selector = selector.trim()
+	      // If it's a html fragment, create nodes from it
+	      // Note: In both Chrome 21 and Firefox 15, DOM error 12
+	      // is thrown if the fragment doesn't begin with <
+	      if (selector[0] == '<' && fragmentRE.test(selector))
+	        dom = zepto.fragment(selector, RegExp.$1, context), selector = null
+	      // If there's a context, create a collection on that context first, and select
+	      // nodes from there
+	      else if (context !== undefined) return $(context).find(selector)
+	      // If it's a CSS selector, use it to select nodes.
+	      else dom = zepto.qsa(document, selector)
+	    }
+	    // If a function is given, call it when the DOM is ready
+	    else if (isFunction(selector)) return $(document).ready(selector)
+	    // If a Zepto collection is given, just return it
+	    else if (zepto.isZ(selector)) return selector
+	    else {
+	      // normalize array if an array of nodes is given
+	      if (isArray(selector)) dom = compact(selector)
+	      // Wrap DOM nodes.
+	      else if (isObject(selector))
+	        dom = [selector], selector = null
+	      // If it's a html fragment, create nodes from it
+	      else if (fragmentRE.test(selector))
+	        dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
+	      // If there's a context, create a collection on that context first, and select
+	      // nodes from there
+	      else if (context !== undefined) return $(context).find(selector)
+	      // And last but no least, if it's a CSS selector, use it to select nodes.
+	      else dom = zepto.qsa(document, selector)
+	    }
+	    // create a new Zepto collection from the nodes found
+	    return zepto.Z(dom, selector)
+	  }
+
+	  // `$` will be the base `Zepto` object. When calling this
+	  // function just call `$.zepto.init, which makes the implementation
+	  // details of selecting nodes and creating Zepto collections
+	  // patchable in plugins.
+	  $ = function(selector, context){
+	    return zepto.init(selector, context)
+	  }
+
+	  function extend(target, source, deep) {
+	    for (key in source)
+	      if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
+	        if (isPlainObject(source[key]) && !isPlainObject(target[key]))
+	          target[key] = {}
+	        if (isArray(source[key]) && !isArray(target[key]))
+	          target[key] = []
+	        extend(target[key], source[key], deep)
+	      }
+	      else if (source[key] !== undefined) target[key] = source[key]
+	  }
+
+	  // Copy all but undefined properties from one or more
+	  // objects to the `target` object.
+	  $.extend = function(target){
+	    var deep, args = slice.call(arguments, 1)
+	    if (typeof target == 'boolean') {
+	      deep = target
+	      target = args.shift()
+	    }
+	    args.forEach(function(arg){ extend(target, arg, deep) })
+	    return target
+	  }
+
+	  // `$.zepto.qsa` is Zepto's CSS selector implementation which
+	  // uses `document.querySelectorAll` and optimizes for some special cases, like `#id`.
+	  // This method can be overridden in plugins.
+	  zepto.qsa = function(element, selector){
+	    var found,
+	        maybeID = selector[0] == '#',
+	        maybeClass = !maybeID && selector[0] == '.',
+	        nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, // Ensure that a 1 char tag name still gets checked
+	        isSimple = simpleSelectorRE.test(nameOnly)
+	    return (element.getElementById && isSimple && maybeID) ? // Safari DocumentFragment doesn't have getElementById
+	      ( (found = element.getElementById(nameOnly)) ? [found] : [] ) :
+	      (element.nodeType !== 1 && element.nodeType !== 9 && element.nodeType !== 11) ? [] :
+	      slice.call(
+	        isSimple && !maybeID && element.getElementsByClassName ? // DocumentFragment doesn't have getElementsByClassName/TagName
+	          maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class
+	          element.getElementsByTagName(selector) : // Or a tag
+	          element.querySelectorAll(selector) // Or it's not simple, and we need to query all
+	      )
+	  }
+
+	  function filtered(nodes, selector) {
+	    return selector == null ? $(nodes) : $(nodes).filter(selector)
+	  }
+
+	  $.contains = document.documentElement.contains ?
+	    function(parent, node) {
+	      return parent !== node && parent.contains(node)
+	    } :
+	    function(parent, node) {
+	      while (node && (node = node.parentNode))
+	        if (node === parent) return true
+	      return false
+	    }
+
+	  function funcArg(context, arg, idx, payload) {
+	    return isFunction(arg) ? arg.call(context, idx, payload) : arg
+	  }
+
+	  function setAttribute(node, name, value) {
+	    value == null ? node.removeAttribute(name) : node.setAttribute(name, value)
+	  }
+
+	  // access className property while respecting SVGAnimatedString
+	  function className(node, value){
+	    var klass = node.className || '',
+	        svg   = klass && klass.baseVal !== undefined
+
+	    if (value === undefined) return svg ? klass.baseVal : klass
+	    svg ? (klass.baseVal = value) : (node.className = value)
+	  }
+
+	  // "true"  => true
+	  // "false" => false
+	  // "null"  => null
+	  // "42"    => 42
+	  // "42.5"  => 42.5
+	  // "08"    => "08"
+	  // JSON    => parse if valid
+	  // String  => self
+	  function deserializeValue(value) {
+	    try {
+	      return value ?
+	        value == "true" ||
+	        ( value == "false" ? false :
+	          value == "null" ? null :
+	          +value + "" == value ? +value :
+	          /^[\[\{]/.test(value) ? $.parseJSON(value) :
+	          value )
+	        : value
+	    } catch(e) {
+	      return value
+	    }
+	  }
+
+	  $.type = type
+	  $.isFunction = isFunction
+	  $.isWindow = isWindow
+	  $.isArray = isArray
+	  $.isPlainObject = isPlainObject
+
+	  $.isEmptyObject = function(obj) {
+	    var name
+	    for (name in obj) return false
+	    return true
+	  }
+
+	  $.isNumeric = function(val) {
+	    var num = Number(val), type = typeof val
+	    return val != null && type != 'boolean' &&
+	      (type != 'string' || val.length) &&
+	      !isNaN(num) && isFinite(num) || false
+	  }
+
+	  $.inArray = function(elem, array, i){
+	    return emptyArray.indexOf.call(array, elem, i)
+	  }
+
+	  $.camelCase = camelize
+	  $.trim = function(str) {
+	    return str == null ? "" : String.prototype.trim.call(str)
+	  }
+
+	  // plugin compatibility
+	  $.uuid = 0
+	  $.support = { }
+	  $.expr = { }
+	  $.noop = function() {}
+
+	  $.map = function(elements, callback){
+	    var value, values = [], i, key
+	    if (likeArray(elements))
+	      for (i = 0; i < elements.length; i++) {
+	        value = callback(elements[i], i)
+	        if (value != null) values.push(value)
+	      }
+	    else
+	      for (key in elements) {
+	        value = callback(elements[key], key)
+	        if (value != null) values.push(value)
+	      }
+	    return flatten(values)
+	  }
+
+	  $.each = function(elements, callback){
+	    var i, key
+	    if (likeArray(elements)) {
+	      for (i = 0; i < elements.length; i++)
+	        if (callback.call(elements[i], i, elements[i]) === false) return elements
+	    } else {
+	      for (key in elements)
+	        if (callback.call(elements[key], key, elements[key]) === false) return elements
+	    }
+
+	    return elements
+	  }
+
+	  $.grep = function(elements, callback){
+	    return filter.call(elements, callback)
+	  }
+
+	  if (window.JSON) $.parseJSON = JSON.parse
+
+	  // Populate the class2type map
+	  $.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
+	    class2type[ "[object " + name + "]" ] = name.toLowerCase()
+	  })
+
+	  // Define methods that will be available on all
+	  // Zepto collections
+	  $.fn = {
+	    constructor: zepto.Z,
+	    length: 0,
+
+	    // Because a collection acts like an array
+	    // copy over these useful array functions.
+	    forEach: emptyArray.forEach,
+	    reduce: emptyArray.reduce,
+	    push: emptyArray.push,
+	    sort: emptyArray.sort,
+	    splice: emptyArray.splice,
+	    indexOf: emptyArray.indexOf,
+	    concat: function(){
+	      var i, value, args = []
+	      for (i = 0; i < arguments.length; i++) {
+	        value = arguments[i]
+	        args[i] = zepto.isZ(value) ? value.toArray() : value
+	      }
+	      return concat.apply(zepto.isZ(this) ? this.toArray() : this, args)
+	    },
+
+	    // `map` and `slice` in the jQuery API work differently
+	    // from their array counterparts
+	    map: function(fn){
+	      return $($.map(this, function(el, i){ return fn.call(el, i, el) }))
+	    },
+	    slice: function(){
+	      return $(slice.apply(this, arguments))
+	    },
+
+	    ready: function(callback){
+	      // need to check if document.body exists for IE as that browser reports
+	      // document ready when it hasn't yet created the body element
+	      if (readyRE.test(document.readyState) && document.body) callback($)
+	      else document.addEventListener('DOMContentLoaded', function(){ callback($) }, false)
+	      return this
+	    },
+	    get: function(idx){
+	      return idx === undefined ? slice.call(this) : this[idx >= 0 ? idx : idx + this.length]
+	    },
+	    toArray: function(){ return this.get() },
+	    size: function(){
+	      return this.length
+	    },
+	    remove: function(){
+	      return this.each(function(){
+	        if (this.parentNode != null)
+	          this.parentNode.removeChild(this)
+	      })
+	    },
+	    each: function(callback){
+	      emptyArray.every.call(this, function(el, idx){
+	        return callback.call(el, idx, el) !== false
+	      })
+	      return this
+	    },
+	    filter: function(selector){
+	      if (isFunction(selector)) return this.not(this.not(selector))
+	      return $(filter.call(this, function(element){
+	        return zepto.matches(element, selector)
+	      }))
+	    },
+	    add: function(selector,context){
+	      return $(uniq(this.concat($(selector,context))))
+	    },
+	    is: function(selector){
+	      return this.length > 0 && zepto.matches(this[0], selector)
+	    },
+	    not: function(selector){
+	      var nodes=[]
+	      if (isFunction(selector) && selector.call !== undefined)
+	        this.each(function(idx){
+	          if (!selector.call(this,idx)) nodes.push(this)
+	        })
+	      else {
+	        var excludes = typeof selector == 'string' ? this.filter(selector) :
+	          (likeArray(selector) && isFunction(selector.item)) ? slice.call(selector) : $(selector)
+	        this.forEach(function(el){
+	          if (excludes.indexOf(el) < 0) nodes.push(el)
+	        })
+	      }
+	      return $(nodes)
+	    },
+	    has: function(selector){
+	      return this.filter(function(){
+	        return isObject(selector) ?
+	          $.contains(this, selector) :
+	          $(this).find(selector).size()
+	      })
+	    },
+	    eq: function(idx){
+	      return idx === -1 ? this.slice(idx) : this.slice(idx, + idx + 1)
+	    },
+	    first: function(){
+	      var el = this[0]
+	      return el && !isObject(el) ? el : $(el)
+	    },
+	    last: function(){
+	      var el = this[this.length - 1]
+	      return el && !isObject(el) ? el : $(el)
+	    },
+	    find: function(selector){
+	      var result, $this = this
+	      if (!selector) result = $()
+	      else if (typeof selector == 'object')
+	        result = $(selector).filter(function(){
+	          var node = this
+	          return emptyArray.some.call($this, function(parent){
+	            return $.contains(parent, node)
+	          })
+	        })
+	      else if (this.length == 1) result = $(zepto.qsa(this[0], selector))
+	      else result = this.map(function(){ return zepto.qsa(this, selector) })
+	      return result
+	    },
+	    closest: function(selector, context){
+	      var nodes = [], collection = typeof selector == 'object' && $(selector)
+	      this.each(function(_, node){
+	        while (node && !(collection ? collection.indexOf(node) >= 0 : zepto.matches(node, selector)))
+	          node = node !== context && !isDocument(node) && node.parentNode
+	        if (node && nodes.indexOf(node) < 0) nodes.push(node)
+	      })
+	      return $(nodes)
+	    },
+	    parents: function(selector){
+	      var ancestors = [], nodes = this
+	      while (nodes.length > 0)
+	        nodes = $.map(nodes, function(node){
+	          if ((node = node.parentNode) && !isDocument(node) && ancestors.indexOf(node) < 0) {
+	            ancestors.push(node)
+	            return node
+	          }
+	        })
+	      return filtered(ancestors, selector)
+	    },
+	    parent: function(selector){
+	      return filtered(uniq(this.pluck('parentNode')), selector)
+	    },
+	    children: function(selector){
+	      return filtered(this.map(function(){ return children(this) }), selector)
+	    },
+	    contents: function() {
+	      return this.map(function() { return this.contentDocument || slice.call(this.childNodes) })
+	    },
+	    siblings: function(selector){
+	      return filtered(this.map(function(i, el){
+	        return filter.call(children(el.parentNode), function(child){ return child!==el })
+	      }), selector)
+	    },
+	    empty: function(){
+	      return this.each(function(){ this.innerHTML = '' })
+	    },
+	    // `pluck` is borrowed from Prototype.js
+	    pluck: function(property){
+	      return $.map(this, function(el){ return el[property] })
+	    },
+	    show: function(){
+	      return this.each(function(){
+	        this.style.display == "none" && (this.style.display = '')
+	        if (getComputedStyle(this, '').getPropertyValue("display") == "none")
+	          this.style.display = defaultDisplay(this.nodeName)
+	      })
+	    },
+	    replaceWith: function(newContent){
+	      return this.before(newContent).remove()
+	    },
+	    wrap: function(structure){
+	      var func = isFunction(structure)
+	      if (this[0] && !func)
+	        var dom   = $(structure).get(0),
+	            clone = dom.parentNode || this.length > 1
+
+	      return this.each(function(index){
+	        $(this).wrapAll(
+	          func ? structure.call(this, index) :
+	            clone ? dom.cloneNode(true) : dom
+	        )
+	      })
+	    },
+	    wrapAll: function(structure){
+	      if (this[0]) {
+	        $(this[0]).before(structure = $(structure))
+	        var children
+	        // drill down to the inmost element
+	        while ((children = structure.children()).length) structure = children.first()
+	        $(structure).append(this)
+	      }
+	      return this
+	    },
+	    wrapInner: function(structure){
+	      var func = isFunction(structure)
+	      return this.each(function(index){
+	        var self = $(this), contents = self.contents(),
+	            dom  = func ? structure.call(this, index) : structure
+	        contents.length ? contents.wrapAll(dom) : self.append(dom)
+	      })
+	    },
+	    unwrap: function(){
+	      this.parent().each(function(){
+	        $(this).replaceWith($(this).children())
+	      })
+	      return this
+	    },
+	    clone: function(){
+	      return this.map(function(){ return this.cloneNode(true) })
+	    },
+	    hide: function(){
+	      return this.css("display", "none")
+	    },
+	    toggle: function(setting){
+	      return this.each(function(){
+	        var el = $(this)
+	        ;(setting === undefined ? el.css("display") == "none" : setting) ? el.show() : el.hide()
+	      })
+	    },
+	    prev: function(selector){ return $(this.pluck('previousElementSibling')).filter(selector || '*') },
+	    next: function(selector){ return $(this.pluck('nextElementSibling')).filter(selector || '*') },
+	    html: function(html){
+	      return 0 in arguments ?
+	        this.each(function(idx){
+	          var originHtml = this.innerHTML
+	          $(this).empty().append( funcArg(this, html, idx, originHtml) )
+	        }) :
+	        (0 in this ? this[0].innerHTML : null)
+	    },
+	    text: function(text){
+	      return 0 in arguments ?
+	        this.each(function(idx){
+	          var newText = funcArg(this, text, idx, this.textContent)
+	          this.textContent = newText == null ? '' : ''+newText
+	        }) :
+	        (0 in this ? this.pluck('textContent').join("") : null)
+	    },
+	    attr: function(name, value){
+	      var result
+	      return (typeof name == 'string' && !(1 in arguments)) ?
+	        (0 in this && this[0].nodeType == 1 && (result = this[0].getAttribute(name)) != null ? result : undefined) :
+	        this.each(function(idx){
+	          if (this.nodeType !== 1) return
+	          if (isObject(name)) for (key in name) setAttribute(this, key, name[key])
+	          else setAttribute(this, name, funcArg(this, value, idx, this.getAttribute(name)))
+	        })
+	    },
+	    removeAttr: function(name){
+	      return this.each(function(){ this.nodeType === 1 && name.split(' ').forEach(function(attribute){
+	        setAttribute(this, attribute)
+	      }, this)})
+	    },
+	    prop: function(name, value){
+	      name = propMap[name] || name
+	      return (1 in arguments) ?
+	        this.each(function(idx){
+	          this[name] = funcArg(this, value, idx, this[name])
+	        }) :
+	        (this[0] && this[0][name])
+	    },
+	    removeProp: function(name){
+	      name = propMap[name] || name
+	      return this.each(function(){ delete this[name] })
+	    },
+	    data: function(name, value){
+	      var attrName = 'data-' + name.replace(capitalRE, '-$1').toLowerCase()
+
+	      var data = (1 in arguments) ?
+	        this.attr(attrName, value) :
+	        this.attr(attrName)
+
+	      return data !== null ? deserializeValue(data) : undefined
+	    },
+	    val: function(value){
+	      if (0 in arguments) {
+	        if (value == null) value = ""
+	        return this.each(function(idx){
+	          this.value = funcArg(this, value, idx, this.value)
+	        })
+	      } else {
+	        return this[0] && (this[0].multiple ?
+	           $(this[0]).find('option').filter(function(){ return this.selected }).pluck('value') :
+	           this[0].value)
+	      }
+	    },
+	    offset: function(coordinates){
+	      if (coordinates) return this.each(function(index){
+	        var $this = $(this),
+	            coords = funcArg(this, coordinates, index, $this.offset()),
+	            parentOffset = $this.offsetParent().offset(),
+	            props = {
+	              top:  coords.top  - parentOffset.top,
+	              left: coords.left - parentOffset.left
+	            }
+
+	        if ($this.css('position') == 'static') props['position'] = 'relative'
+	        $this.css(props)
+	      })
+	      if (!this.length) return null
+	      if (document.documentElement !== this[0] && !$.contains(document.documentElement, this[0]))
+	        return {top: 0, left: 0}
+	      var obj = this[0].getBoundingClientRect()
+	      return {
+	        left: obj.left + window.pageXOffset,
+	        top: obj.top + window.pageYOffset,
+	        width: Math.round(obj.width),
+	        height: Math.round(obj.height)
+	      }
+	    },
+	    css: function(property, value){
+	      if (arguments.length < 2) {
+	        var element = this[0]
+	        if (typeof property == 'string') {
+	          if (!element) return
+	          return element.style[camelize(property)] || getComputedStyle(element, '').getPropertyValue(property)
+	        } else if (isArray(property)) {
+	          if (!element) return
+	          var props = {}
+	          var computedStyle = getComputedStyle(element, '')
+	          $.each(property, function(_, prop){
+	            props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
+	          })
+	          return props
+	        }
+	      }
+
+	      var css = ''
+	      if (type(property) == 'string') {
+	        if (!value && value !== 0)
+	          this.each(function(){ this.style.removeProperty(dasherize(property)) })
+	        else
+	          css = dasherize(property) + ":" + maybeAddPx(property, value)
+	      } else {
+	        for (key in property)
+	          if (!property[key] && property[key] !== 0)
+	            this.each(function(){ this.style.removeProperty(dasherize(key)) })
+	          else
+	            css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
+	      }
+
+	      return this.each(function(){ this.style.cssText += ';' + css })
+	    },
+	    index: function(element){
+	      return element ? this.indexOf($(element)[0]) : this.parent().children().indexOf(this[0])
+	    },
+	    hasClass: function(name){
+	      if (!name) return false
+	      return emptyArray.some.call(this, function(el){
+	        return this.test(className(el))
+	      }, classRE(name))
+	    },
+	    addClass: function(name){
+	      if (!name) return this
+	      return this.each(function(idx){
+	        if (!('className' in this)) return
+	        classList = []
+	        var cls = className(this), newName = funcArg(this, name, idx, cls)
+	        newName.split(/\s+/g).forEach(function(klass){
+	          if (!$(this).hasClass(klass)) classList.push(klass)
+	        }, this)
+	        classList.length && className(this, cls + (cls ? " " : "") + classList.join(" "))
+	      })
+	    },
+	    removeClass: function(name){
+	      return this.each(function(idx){
+	        if (!('className' in this)) return
+	        if (name === undefined) return className(this, '')
+	        classList = className(this)
+	        funcArg(this, name, idx, classList).split(/\s+/g).forEach(function(klass){
+	          classList = classList.replace(classRE(klass), " ")
+	        })
+	        className(this, classList.trim())
+	      })
+	    },
+	    toggleClass: function(name, when){
+	      if (!name) return this
+	      return this.each(function(idx){
+	        var $this = $(this), names = funcArg(this, name, idx, className(this))
+	        names.split(/\s+/g).forEach(function(klass){
+	          (when === undefined ? !$this.hasClass(klass) : when) ?
+	            $this.addClass(klass) : $this.removeClass(klass)
+	        })
+	      })
+	    },
+	    scrollTop: function(value){
+	      if (!this.length) return
+	      var hasScrollTop = 'scrollTop' in this[0]
+	      if (value === undefined) return hasScrollTop ? this[0].scrollTop : this[0].pageYOffset
+	      return this.each(hasScrollTop ?
+	        function(){ this.scrollTop = value } :
+	        function(){ this.scrollTo(this.scrollX, value) })
+	    },
+	    scrollLeft: function(value){
+	      if (!this.length) return
+	      var hasScrollLeft = 'scrollLeft' in this[0]
+	      if (value === undefined) return hasScrollLeft ? this[0].scrollLeft : this[0].pageXOffset
+	      return this.each(hasScrollLeft ?
+	        function(){ this.scrollLeft = value } :
+	        function(){ this.scrollTo(value, this.scrollY) })
+	    },
+	    position: function() {
+	      if (!this.length) return
+
+	      var elem = this[0],
+	        // Get *real* offsetParent
+	        offsetParent = this.offsetParent(),
+	        // Get correct offsets
+	        offset       = this.offset(),
+	        parentOffset = rootNodeRE.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset()
+
+	      // Subtract element margins
+	      // note: when an element has margin: auto the offsetLeft and marginLeft
+	      // are the same in Safari causing offset.left to incorrectly be 0
+	      offset.top  -= parseFloat( $(elem).css('margin-top') ) || 0
+	      offset.left -= parseFloat( $(elem).css('margin-left') ) || 0
+
+	      // Add offsetParent borders
+	      parentOffset.top  += parseFloat( $(offsetParent[0]).css('border-top-width') ) || 0
+	      parentOffset.left += parseFloat( $(offsetParent[0]).css('border-left-width') ) || 0
+
+	      // Subtract the two offsets
+	      return {
+	        top:  offset.top  - parentOffset.top,
+	        left: offset.left - parentOffset.left
+	      }
+	    },
+	    offsetParent: function() {
+	      return this.map(function(){
+	        var parent = this.offsetParent || document.body
+	        while (parent && !rootNodeRE.test(parent.nodeName) && $(parent).css("position") == "static")
+	          parent = parent.offsetParent
+	        return parent
+	      })
+	    }
+	  }
+
+	  // for now
+	  $.fn.detach = $.fn.remove
+
+	  // Generate the `width` and `height` functions
+	  ;['width', 'height'].forEach(function(dimension){
+	    var dimensionProperty =
+	      dimension.replace(/./, function(m){ return m[0].toUpperCase() })
+
+	    $.fn[dimension] = function(value){
+	      var offset, el = this[0]
+	      if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
+	        isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
+	        (offset = this.offset()) && offset[dimension]
+	      else return this.each(function(idx){
+	        el = $(this)
+	        el.css(dimension, funcArg(this, value, idx, el[dimension]()))
+	      })
+	    }
+	  })
+
+	  function traverseNode(node, fun) {
+	    fun(node)
+	    for (var i = 0, len = node.childNodes.length; i < len; i++)
+	      traverseNode(node.childNodes[i], fun)
+	  }
+
+	  // Generate the `after`, `prepend`, `before`, `append`,
+	  // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
+	  adjacencyOperators.forEach(function(operator, operatorIndex) {
+	    var inside = operatorIndex % 2 //=> prepend, append
+
+	    $.fn[operator] = function(){
+	      // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
+	      var argType, nodes = $.map(arguments, function(arg) {
+	            var arr = []
+	            argType = type(arg)
+	            if (argType == "array") {
+	              arg.forEach(function(el) {
+	                if (el.nodeType !== undefined) return arr.push(el)
+	                else if ($.zepto.isZ(el)) return arr = arr.concat(el.get())
+	                arr = arr.concat(zepto.fragment(el))
+	              })
+	              return arr
+	            }
+	            return argType == "object" || arg == null ?
+	              arg : zepto.fragment(arg)
+	          }),
+	          parent, copyByClone = this.length > 1
+	      if (nodes.length < 1) return this
+
+	      return this.each(function(_, target){
+	        parent = inside ? target : target.parentNode
+
+	        // convert all methods to a "before" operation
+	        target = operatorIndex == 0 ? target.nextSibling :
+	                 operatorIndex == 1 ? target.firstChild :
+	                 operatorIndex == 2 ? target :
+	                 null
+
+	        var parentInDocument = $.contains(document.documentElement, parent)
+
+	        nodes.forEach(function(node){
+	          if (copyByClone) node = node.cloneNode(true)
+	          else if (!parent) return $(node).remove()
+
+	          parent.insertBefore(node, target)
+	          if (parentInDocument) traverseNode(node, function(el){
+	            if (el.nodeName != null && el.nodeName.toUpperCase() === 'SCRIPT' &&
+	               (!el.type || el.type === 'text/javascript') && !el.src){
+	              var target = el.ownerDocument ? el.ownerDocument.defaultView : window
+	              target['eval'].call(target, el.innerHTML)
+	            }
+	          })
+	        })
+	      })
+	    }
+
+	    // after    => insertAfter
+	    // prepend  => prependTo
+	    // before   => insertBefore
+	    // append   => appendTo
+	    $.fn[inside ? operator+'To' : 'insert'+(operatorIndex ? 'Before' : 'After')] = function(html){
+	      $(html)[operator](this)
+	      return this
+	    }
+	  })
+
+	  zepto.Z.prototype = Z.prototype = $.fn
+
+	  // Export internal API functions in the `$.zepto` namespace
+	  zepto.uniq = uniq
+	  zepto.deserializeValue = deserializeValue
+	  $.zepto = zepto
+
+	  return $
+	})()
+
+	module.exports = Zepto;
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//     Zepto.js
+	//     (c) 2010-2016 Thomas Fuchs
+	//     Zepto.js may be freely distributed under the MIT license.
+
+	var Zepto = __webpack_require__(7);
+
+	;(function($){
+	  var _zid = 1, undefined,
+	      slice = Array.prototype.slice,
+	      isFunction = $.isFunction,
+	      isString = function(obj){ return typeof obj == 'string' },
+	      handlers = {},
+	      specialEvents={},
+	      focusinSupported = 'onfocusin' in window,
+	      focus = { focus: 'focusin', blur: 'focusout' },
+	      hover = { mouseenter: 'mouseover', mouseleave: 'mouseout' }
+
+	  specialEvents.click = specialEvents.mousedown = specialEvents.mouseup = specialEvents.mousemove = 'MouseEvents'
+
+	  function zid(element) {
+	    return element._zid || (element._zid = _zid++)
+	  }
+	  function findHandlers(element, event, fn, selector) {
+	    event = parse(event)
+	    if (event.ns) var matcher = matcherFor(event.ns)
+	    return (handlers[zid(element)] || []).filter(function(handler) {
+	      return handler
+	        && (!event.e  || handler.e == event.e)
+	        && (!event.ns || matcher.test(handler.ns))
+	        && (!fn       || zid(handler.fn) === zid(fn))
+	        && (!selector || handler.sel == selector)
+	    })
+	  }
+	  function parse(event) {
+	    var parts = ('' + event).split('.')
+	    return {e: parts[0], ns: parts.slice(1).sort().join(' ')}
+	  }
+	  function matcherFor(ns) {
+	    return new RegExp('(?:^| )' + ns.replace(' ', ' .* ?') + '(?: |$)')
+	  }
+
+	  function eventCapture(handler, captureSetting) {
+	    return handler.del &&
+	      (!focusinSupported && (handler.e in focus)) ||
+	      !!captureSetting
+	  }
+
+	  function realEvent(type) {
+	    return hover[type] || (focusinSupported && focus[type]) || type
+	  }
+
+	  function add(element, events, fn, data, selector, delegator, capture){
+	    var id = zid(element), set = (handlers[id] || (handlers[id] = []))
+	    events.split(/\s/).forEach(function(event){
+	      if (event == 'ready') return $(document).ready(fn)
+	      var handler   = parse(event)
+	      handler.fn    = fn
+	      handler.sel   = selector
+	      // emulate mouseenter, mouseleave
+	      if (handler.e in hover) fn = function(e){
+	        var related = e.relatedTarget
+	        if (!related || (related !== this && !$.contains(this, related)))
+	          return handler.fn.apply(this, arguments)
+	      }
+	      handler.del   = delegator
+	      var callback  = delegator || fn
+	      handler.proxy = function(e){
+	        e = compatible(e)
+	        if (e.isImmediatePropagationStopped()) return
+	        e.data = data
+	        var result = callback.apply(element, e._args == undefined ? [e] : [e].concat(e._args))
+	        if (result === false) e.preventDefault(), e.stopPropagation()
+	        return result
+	      }
+	      handler.i = set.length
+	      set.push(handler)
+	      if ('addEventListener' in element)
+	        element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
+	    })
+	  }
+	  function remove(element, events, fn, selector, capture){
+	    var id = zid(element)
+	    ;(events || '').split(/\s/).forEach(function(event){
+	      findHandlers(element, event, fn, selector).forEach(function(handler){
+	        delete handlers[id][handler.i]
+	      if ('removeEventListener' in element)
+	        element.removeEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
+	      })
+	    })
+	  }
+
+	  $.event = { add: add, remove: remove }
+
+	  $.proxy = function(fn, context) {
+	    var args = (2 in arguments) && slice.call(arguments, 2)
+	    if (isFunction(fn)) {
+	      var proxyFn = function(){ return fn.apply(context, args ? args.concat(slice.call(arguments)) : arguments) }
+	      proxyFn._zid = zid(fn)
+	      return proxyFn
+	    } else if (isString(context)) {
+	      if (args) {
+	        args.unshift(fn[context], fn)
+	        return $.proxy.apply(null, args)
+	      } else {
+	        return $.proxy(fn[context], fn)
+	      }
+	    } else {
+	      throw new TypeError("expected function")
+	    }
+	  }
+
+	  $.fn.bind = function(event, data, callback){
+	    return this.on(event, data, callback)
+	  }
+	  $.fn.unbind = function(event, callback){
+	    return this.off(event, callback)
+	  }
+	  $.fn.one = function(event, selector, data, callback){
+	    return this.on(event, selector, data, callback, 1)
+	  }
+
+	  var returnTrue = function(){return true},
+	      returnFalse = function(){return false},
+	      ignoreProperties = /^([A-Z]|returnValue$|layer[XY]$|webkitMovement[XY]$)/,
+	      eventMethods = {
+	        preventDefault: 'isDefaultPrevented',
+	        stopImmediatePropagation: 'isImmediatePropagationStopped',
+	        stopPropagation: 'isPropagationStopped'
+	      }
+
+	  function compatible(event, source) {
+	    if (source || !event.isDefaultPrevented) {
+	      source || (source = event)
+
+	      $.each(eventMethods, function(name, predicate) {
+	        var sourceMethod = source[name]
+	        event[name] = function(){
+	          this[predicate] = returnTrue
+	          return sourceMethod && sourceMethod.apply(source, arguments)
+	        }
+	        event[predicate] = returnFalse
+	      })
+
+	      try {
+	        event.timeStamp || (event.timeStamp = Date.now())
+	      } catch (ignored) { }
+
+	      if (source.defaultPrevented !== undefined ? source.defaultPrevented :
+	          'returnValue' in source ? source.returnValue === false :
+	          source.getPreventDefault && source.getPreventDefault())
+	        event.isDefaultPrevented = returnTrue
+	    }
+	    return event
+	  }
+
+	  function createProxy(event) {
+	    var key, proxy = { originalEvent: event }
+	    for (key in event)
+	      if (!ignoreProperties.test(key) && event[key] !== undefined) proxy[key] = event[key]
+
+	    return compatible(proxy, event)
+	  }
+
+	  $.fn.delegate = function(selector, event, callback){
+	    return this.on(event, selector, callback)
+	  }
+	  $.fn.undelegate = function(selector, event, callback){
+	    return this.off(event, selector, callback)
+	  }
+
+	  $.fn.live = function(event, callback){
+	    $(document.body).delegate(this.selector, event, callback)
+	    return this
+	  }
+	  $.fn.die = function(event, callback){
+	    $(document.body).undelegate(this.selector, event, callback)
+	    return this
+	  }
+
+	  $.fn.on = function(event, selector, data, callback, one){
+	    var autoRemove, delegator, $this = this
+	    if (event && !isString(event)) {
+	      $.each(event, function(type, fn){
+	        $this.on(type, selector, data, fn, one)
+	      })
+	      return $this
+	    }
+
+	    if (!isString(selector) && !isFunction(callback) && callback !== false)
+	      callback = data, data = selector, selector = undefined
+	    if (callback === undefined || data === false)
+	      callback = data, data = undefined
+
+	    if (callback === false) callback = returnFalse
+
+	    return $this.each(function(_, element){
+	      if (one) autoRemove = function(e){
+	        remove(element, e.type, callback)
+	        return callback.apply(this, arguments)
+	      }
+
+	      if (selector) delegator = function(e){
+	        var evt, match = $(e.target).closest(selector, element).get(0)
+	        if (match && match !== element) {
+	          evt = $.extend(createProxy(e), {currentTarget: match, liveFired: element})
+	          return (autoRemove || callback).apply(match, [evt].concat(slice.call(arguments, 1)))
+	        }
+	      }
+
+	      add(element, event, callback, data, selector, delegator || autoRemove)
+	    })
+	  }
+	  $.fn.off = function(event, selector, callback){
+	    var $this = this
+	    if (event && !isString(event)) {
+	      $.each(event, function(type, fn){
+	        $this.off(type, selector, fn)
+	      })
+	      return $this
+	    }
+
+	    if (!isString(selector) && !isFunction(callback) && callback !== false)
+	      callback = selector, selector = undefined
+
+	    if (callback === false) callback = returnFalse
+
+	    return $this.each(function(){
+	      remove(this, event, callback, selector)
+	    })
+	  }
+
+	  $.fn.trigger = function(event, args){
+	    event = (isString(event) || $.isPlainObject(event)) ? $.Event(event) : compatible(event)
+	    event._args = args
+	    return this.each(function(){
+	      // handle focus(), blur() by calling them directly
+	      if (event.type in focus && typeof this[event.type] == "function") this[event.type]()
+	      // items in the collection might not be DOM elements
+	      else if ('dispatchEvent' in this) this.dispatchEvent(event)
+	      else $(this).triggerHandler(event, args)
+	    })
+	  }
+
+	  // triggers event handlers on current element just as if an event occurred,
+	  // doesn't trigger an actual event, doesn't bubble
+	  $.fn.triggerHandler = function(event, args){
+	    var e, result
+	    this.each(function(i, element){
+	      e = createProxy(isString(event) ? $.Event(event) : event)
+	      e._args = args
+	      e.target = element
+	      $.each(findHandlers(element, event.type || event), function(i, handler){
+	        result = handler.proxy(e)
+	        if (e.isImmediatePropagationStopped()) return false
+	      })
+	    })
+	    return result
+	  }
+
+	  // shortcut methods for `.bind(event, fn)` for each event type
+	  ;('focusin focusout focus blur load resize scroll unload click dblclick '+
+	  'mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave '+
+	  'change select keydown keypress keyup error').split(' ').forEach(function(event) {
+	    $.fn[event] = function(callback) {
+	      return (0 in arguments) ?
+	        this.bind(event, callback) :
+	        this.trigger(event)
+	    }
+	  })
+
+	  $.Event = function(type, props) {
+	    if (!isString(type)) props = type, type = props.type
+	    var event = document.createEvent(specialEvents[type] || 'Events'), bubbles = true
+	    if (props) for (var name in props) (name == 'bubbles') ? (bubbles = !!props[name]) : (event[name] = props[name])
+	    event.initEvent(type, bubbles, true)
+	    return compatible(event)
+	  }
+
+	})(Zepto)
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//     Zepto.js
+	//     (c) 2010-2016 Thomas Fuchs
+	//     Zepto.js may be freely distributed under the MIT license.
+
+	var Zepto = __webpack_require__(7);
+
+	;(function($){
+	  var jsonpID = +new Date(),
+	      document = window.document,
+	      key,
+	      name,
+	      rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+	      scriptTypeRE = /^(?:text|application)\/javascript/i,
+	      xmlTypeRE = /^(?:text|application)\/xml/i,
+	      jsonType = 'application/json',
+	      htmlType = 'text/html',
+	      blankRE = /^\s*$/,
+	      originAnchor = document.createElement('a')
+
+	  originAnchor.href = window.location.href
+
+	  // trigger a custom event and return false if it was cancelled
+	  function triggerAndReturn(context, eventName, data) {
+	    var event = $.Event(eventName)
+	    $(context).trigger(event, data)
+	    return !event.isDefaultPrevented()
+	  }
+
+	  // trigger an Ajax "global" event
+	  function triggerGlobal(settings, context, eventName, data) {
+	    if (settings.global) return triggerAndReturn(context || document, eventName, data)
+	  }
+
+	  // Number of active Ajax requests
+	  $.active = 0
+
+	  function ajaxStart(settings) {
+	    if (settings.global && $.active++ === 0) triggerGlobal(settings, null, 'ajaxStart')
+	  }
+	  function ajaxStop(settings) {
+	    if (settings.global && !(--$.active)) triggerGlobal(settings, null, 'ajaxStop')
+	  }
+
+	  // triggers an extra global event "ajaxBeforeSend" that's like "ajaxSend" but cancelable
+	  function ajaxBeforeSend(xhr, settings) {
+	    var context = settings.context
+	    if (settings.beforeSend.call(context, xhr, settings) === false ||
+	        triggerGlobal(settings, context, 'ajaxBeforeSend', [xhr, settings]) === false)
+	      return false
+
+	    triggerGlobal(settings, context, 'ajaxSend', [xhr, settings])
+	  }
+	  function ajaxSuccess(data, xhr, settings, deferred) {
+	    var context = settings.context, status = 'success'
+	    settings.success.call(context, data, status, xhr)
+	    if (deferred) deferred.resolveWith(context, [data, status, xhr])
+	    triggerGlobal(settings, context, 'ajaxSuccess', [xhr, settings, data])
+	    ajaxComplete(status, xhr, settings)
+	  }
+	  // type: "timeout", "error", "abort", "parsererror"
+	  function ajaxError(error, type, xhr, settings, deferred) {
+	    var context = settings.context
+	    settings.error.call(context, xhr, type, error)
+	    if (deferred) deferred.rejectWith(context, [xhr, type, error])
+	    triggerGlobal(settings, context, 'ajaxError', [xhr, settings, error || type])
+	    ajaxComplete(type, xhr, settings)
+	  }
+	  // status: "success", "notmodified", "error", "timeout", "abort", "parsererror"
+	  function ajaxComplete(status, xhr, settings) {
+	    var context = settings.context
+	    settings.complete.call(context, xhr, status)
+	    triggerGlobal(settings, context, 'ajaxComplete', [xhr, settings])
+	    ajaxStop(settings)
+	  }
+
+	  function ajaxDataFilter(data, type, settings) {
+	    if (settings.dataFilter == empty) return data
+	    var context = settings.context
+	    return settings.dataFilter.call(context, data, type)
+	  }
+
+	  // Empty function, used as default callback
+	  function empty() {}
+
+	  $.ajaxJSONP = function(options, deferred){
+	    if (!('type' in options)) return $.ajax(options)
+
+	    var _callbackName = options.jsonpCallback,
+	      callbackName = ($.isFunction(_callbackName) ?
+	        _callbackName() : _callbackName) || ('Zepto' + (jsonpID++)),
+	      script = document.createElement('script'),
+	      originalCallback = window[callbackName],
+	      responseData,
+	      abort = function(errorType) {
+	        $(script).triggerHandler('error', errorType || 'abort')
+	      },
+	      xhr = { abort: abort }, abortTimeout
+
+	    if (deferred) deferred.promise(xhr)
+
+	    $(script).on('load error', function(e, errorType){
+	      clearTimeout(abortTimeout)
+	      $(script).off().remove()
+
+	      if (e.type == 'error' || !responseData) {
+	        ajaxError(null, errorType || 'error', xhr, options, deferred)
+	      } else {
+	        ajaxSuccess(responseData[0], xhr, options, deferred)
+	      }
+
+	      window[callbackName] = originalCallback
+	      if (responseData && $.isFunction(originalCallback))
+	        originalCallback(responseData[0])
+
+	      originalCallback = responseData = undefined
+	    })
+
+	    if (ajaxBeforeSend(xhr, options) === false) {
+	      abort('abort')
+	      return xhr
+	    }
+
+	    window[callbackName] = function(){
+	      responseData = arguments
+	    }
+
+	    script.src = options.url.replace(/\?(.+)=\?/, '?$1=' + callbackName)
+	    document.head.appendChild(script)
+
+	    if (options.timeout > 0) abortTimeout = setTimeout(function(){
+	      abort('timeout')
+	    }, options.timeout)
+
+	    return xhr
+	  }
+
+	  $.ajaxSettings = {
+	    // Default type of request
+	    type: 'GET',
+	    // Callback that is executed before request
+	    beforeSend: empty,
+	    // Callback that is executed if the request succeeds
+	    success: empty,
+	    // Callback that is executed the the server drops error
+	    error: empty,
+	    // Callback that is executed on request complete (both: error and success)
+	    complete: empty,
+	    // The context for the callbacks
+	    context: null,
+	    // Whether to trigger "global" Ajax events
+	    global: true,
+	    // Transport
+	    xhr: function () {
+	      return new window.XMLHttpRequest()
+	    },
+	    // MIME types mapping
+	    // IIS returns Javascript as "application/x-javascript"
+	    accepts: {
+	      script: 'text/javascript, application/javascript, application/x-javascript',
+	      json:   jsonType,
+	      xml:    'application/xml, text/xml',
+	      html:   htmlType,
+	      text:   'text/plain'
+	    },
+	    // Whether the request is to another domain
+	    crossDomain: false,
+	    // Default timeout
+	    timeout: 0,
+	    // Whether data should be serialized to string
+	    processData: true,
+	    // Whether the browser should be allowed to cache GET responses
+	    cache: true,
+	    //Used to handle the raw response data of XMLHttpRequest.
+	    //This is a pre-filtering function to sanitize the response.
+	    //The sanitized response should be returned
+	    dataFilter: empty
+	  }
+
+	  function mimeToDataType(mime) {
+	    if (mime) mime = mime.split(';', 2)[0]
+	    return mime && ( mime == htmlType ? 'html' :
+	      mime == jsonType ? 'json' :
+	      scriptTypeRE.test(mime) ? 'script' :
+	      xmlTypeRE.test(mime) && 'xml' ) || 'text'
+	  }
+
+	  function appendQuery(url, query) {
+	    if (query == '') return url
+	    return (url + '&' + query).replace(/[&?]{1,2}/, '?')
+	  }
+
+	  // serialize payload and append it to the URL for GET requests
+	  function serializeData(options) {
+	    if (options.processData && options.data && $.type(options.data) != "string")
+	      options.data = $.param(options.data, options.traditional)
+	    if (options.data && (!options.type || options.type.toUpperCase() == 'GET' || 'jsonp' == options.dataType))
+	      options.url = appendQuery(options.url, options.data), options.data = undefined
+	  }
+
+	  $.ajax = function(options){
+	    var settings = $.extend({}, options || {}),
+	        deferred = $.Deferred && $.Deferred(),
+	        urlAnchor, hashIndex
+	    for (key in $.ajaxSettings) if (settings[key] === undefined) settings[key] = $.ajaxSettings[key]
+
+	    ajaxStart(settings)
+
+	    if (!settings.crossDomain) {
+	      urlAnchor = document.createElement('a')
+	      urlAnchor.href = settings.url
+	      // cleans up URL for .href (IE only), see https://github.com/madrobby/zepto/pull/1049
+	      urlAnchor.href = urlAnchor.href
+	      settings.crossDomain = (originAnchor.protocol + '//' + originAnchor.host) !== (urlAnchor.protocol + '//' + urlAnchor.host)
+	    }
+
+	    if (!settings.url) settings.url = window.location.toString()
+	    if ((hashIndex = settings.url.indexOf('#')) > -1) settings.url = settings.url.slice(0, hashIndex)
+	    serializeData(settings)
+
+	    var dataType = settings.dataType, hasPlaceholder = /\?.+=\?/.test(settings.url)
+	    if (hasPlaceholder) dataType = 'jsonp'
+
+	    if (settings.cache === false || (
+	         (!options || options.cache !== true) &&
+	         ('script' == dataType || 'jsonp' == dataType)
+	        ))
+	      settings.url = appendQuery(settings.url, '_=' + Date.now())
+
+	    if ('jsonp' == dataType) {
+	      if (!hasPlaceholder)
+	        settings.url = appendQuery(settings.url,
+	          settings.jsonp ? (settings.jsonp + '=?') : settings.jsonp === false ? '' : 'callback=?')
+	      return $.ajaxJSONP(settings, deferred)
+	    }
+
+	    var mime = settings.accepts[dataType],
+	        headers = { },
+	        setHeader = function(name, value) { headers[name.toLowerCase()] = [name, value] },
+	        protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
+	        xhr = settings.xhr(),
+	        nativeSetHeader = xhr.setRequestHeader,
+	        abortTimeout
+
+	    if (deferred) deferred.promise(xhr)
+
+	    if (!settings.crossDomain) setHeader('X-Requested-With', 'XMLHttpRequest')
+	    setHeader('Accept', mime || '*/*')
+	    if (mime = settings.mimeType || mime) {
+	      if (mime.indexOf(',') > -1) mime = mime.split(',', 2)[0]
+	      xhr.overrideMimeType && xhr.overrideMimeType(mime)
+	    }
+	    if (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() != 'GET'))
+	      setHeader('Content-Type', settings.contentType || 'application/x-www-form-urlencoded')
+
+	    if (settings.headers) for (name in settings.headers) setHeader(name, settings.headers[name])
+	    xhr.setRequestHeader = setHeader
+
+	    xhr.onreadystatechange = function(){
+	      if (xhr.readyState == 4) {
+	        xhr.onreadystatechange = empty
+	        clearTimeout(abortTimeout)
+	        var result, error = false
+	        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && protocol == 'file:')) {
+	          dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'))
+
+	          if (xhr.responseType == 'arraybuffer' || xhr.responseType == 'blob')
+	            result = xhr.response
+	          else {
+	            result = xhr.responseText
+
+	            try {
+	              // http://perfectionkills.com/global-eval-what-are-the-options/
+	              // sanitize response accordingly if data filter callback provided
+	              result = ajaxDataFilter(result, dataType, settings)
+	              if (dataType == 'script')    (1,eval)(result)
+	              else if (dataType == 'xml')  result = xhr.responseXML
+	              else if (dataType == 'json') result = blankRE.test(result) ? null : $.parseJSON(result)
+	            } catch (e) { error = e }
+
+	            if (error) return ajaxError(error, 'parsererror', xhr, settings, deferred)
+	          }
+
+	          ajaxSuccess(result, xhr, settings, deferred)
+	        } else {
+	          ajaxError(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr, settings, deferred)
+	        }
+	      }
+	    }
+
+	    if (ajaxBeforeSend(xhr, settings) === false) {
+	      xhr.abort()
+	      ajaxError(null, 'abort', xhr, settings, deferred)
+	      return xhr
+	    }
+
+	    var async = 'async' in settings ? settings.async : true
+	    xhr.open(settings.type, settings.url, async, settings.username, settings.password)
+
+	    if (settings.xhrFields) for (name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
+
+	    for (name in headers) nativeSetHeader.apply(xhr, headers[name])
+
+	    if (settings.timeout > 0) abortTimeout = setTimeout(function(){
+	        xhr.onreadystatechange = empty
+	        xhr.abort()
+	        ajaxError(null, 'timeout', xhr, settings, deferred)
+	      }, settings.timeout)
+
+	    // avoid sending empty string (#319)
+	    xhr.send(settings.data ? settings.data : null)
+	    return xhr
+	  }
+
+	  // handle optional data/success arguments
+	  function parseArguments(url, data, success, dataType) {
+	    if ($.isFunction(data)) dataType = success, success = data, data = undefined
+	    if (!$.isFunction(success)) dataType = success, success = undefined
+	    return {
+	      url: url
+	    , data: data
+	    , success: success
+	    , dataType: dataType
+	    }
+	  }
+
+	  $.get = function(/* url, data, success, dataType */){
+	    return $.ajax(parseArguments.apply(null, arguments))
+	  }
+
+	  $.post = function(/* url, data, success, dataType */){
+	    var options = parseArguments.apply(null, arguments)
+	    options.type = 'POST'
+	    return $.ajax(options)
+	  }
+
+	  $.getJSON = function(/* url, data, success */){
+	    var options = parseArguments.apply(null, arguments)
+	    options.dataType = 'json'
+	    return $.ajax(options)
+	  }
+
+	  $.fn.load = function(url, data, success){
+	    if (!this.length) return this
+	    var self = this, parts = url.split(/\s/), selector,
+	        options = parseArguments(url, data, success),
+	        callback = options.success
+	    if (parts.length > 1) options.url = parts[0], selector = parts[1]
+	    options.success = function(response){
+	      self.html(selector ?
+	        $('<div>').html(response.replace(rscript, "")).find(selector)
+	        : response)
+	      callback && callback.apply(self, arguments)
+	    }
+	    $.ajax(options)
+	    return this
+	  }
+
+	  var escape = encodeURIComponent
+
+	  function serialize(params, obj, traditional, scope){
+	    var type, array = $.isArray(obj), hash = $.isPlainObject(obj)
+	    $.each(obj, function(key, value) {
+	      type = $.type(value)
+	      if (scope) key = traditional ? scope :
+	        scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
+	      // handle data in serializeArray() format
+	      if (!scope && array) params.add(value.name, value.value)
+	      // recurse into nested objects
+	      else if (type == "array" || (!traditional && type == "object"))
+	        serialize(params, value, traditional, key)
+	      else params.add(key, value)
+	    })
+	  }
+
+	  $.param = function(obj, traditional){
+	    var params = []
+	    params.add = function(key, value) {
+	      if ($.isFunction(value)) value = value()
+	      if (value == null) value = ""
+	      this.push(escape(key) + '=' + escape(value))
+	    }
+	    serialize(params, obj, traditional)
+	    return params.join('&').replace(/%20/g, '+')
+	  }
+	})(Zepto)
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//     Zepto.js
+	//     (c) 2010-2016 Thomas Fuchs
+	//     Zepto.js may be freely distributed under the MIT license.
+
+	var Zepto = __webpack_require__(7);
+
+	;(function($){
+	  var touch = {},
+	    touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
+	    longTapDelay = 750,
+	    gesture
+
+	  function swipeDirection(x1, x2, y1, y2) {
+	    return Math.abs(x1 - x2) >=
+	      Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down')
+	  }
+
+	  function longTap() {
+	    longTapTimeout = null
+	    if (touch.last) {
+	      touch.el.trigger('longTap')
+	      touch = {}
+	    }
+	  }
+
+	  function cancelLongTap() {
+	    if (longTapTimeout) clearTimeout(longTapTimeout)
+	    longTapTimeout = null
+	  }
+
+	  function cancelAll() {
+	    if (touchTimeout) clearTimeout(touchTimeout)
+	    if (tapTimeout) clearTimeout(tapTimeout)
+	    if (swipeTimeout) clearTimeout(swipeTimeout)
+	    if (longTapTimeout) clearTimeout(longTapTimeout)
+	    touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null
+	    touch = {}
+	  }
+
+	  function isPrimaryTouch(event){
+	    return (event.pointerType == 'touch' ||
+	      event.pointerType == event.MSPOINTER_TYPE_TOUCH)
+	      && event.isPrimary
+	  }
+
+	  function isPointerEventType(e, type){
+	    return (e.type == 'pointer'+type ||
+	      e.type.toLowerCase() == 'mspointer'+type)
+	  }
+
+	  $(document).ready(function(){
+	    var now, delta, deltaX = 0, deltaY = 0, firstTouch, _isPointerType
+
+	    if ('MSGesture' in window) {
+	      gesture = new MSGesture()
+	      gesture.target = document.body
+	    }
+
+	    $(document)
+	      .bind('MSGestureEnd', function(e){
+	        var swipeDirectionFromVelocity =
+	          e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null
+	        if (swipeDirectionFromVelocity) {
+	          touch.el.trigger('swipe')
+	          touch.el.trigger('swipe'+ swipeDirectionFromVelocity)
+	        }
+	      })
+	      .on('touchstart MSPointerDown pointerdown', function(e){
+	        if((_isPointerType = isPointerEventType(e, 'down')) &&
+	          !isPrimaryTouch(e)) return
+	        firstTouch = _isPointerType ? e : e.touches[0]
+	        if (e.touches && e.touches.length === 1 && touch.x2) {
+	          // Clear out touch movement data if we have it sticking around
+	          // This can occur if touchcancel doesn't fire due to preventDefault, etc.
+	          touch.x2 = undefined
+	          touch.y2 = undefined
+	        }
+	        now = Date.now()
+	        delta = now - (touch.last || now)
+	        touch.el = $('tagName' in firstTouch.target ?
+	          firstTouch.target : firstTouch.target.parentNode)
+	        touchTimeout && clearTimeout(touchTimeout)
+	        touch.x1 = firstTouch.pageX
+	        touch.y1 = firstTouch.pageY
+	        if (delta > 0 && delta <= 250) touch.isDoubleTap = true
+	        touch.last = now
+	        longTapTimeout = setTimeout(longTap, longTapDelay)
+	        // adds the current touch contact for IE gesture recognition
+	        if (gesture && _isPointerType) gesture.addPointer(e.pointerId)
+	      })
+	      .on('touchmove MSPointerMove pointermove', function(e){
+	        if((_isPointerType = isPointerEventType(e, 'move')) &&
+	          !isPrimaryTouch(e)) return
+	        firstTouch = _isPointerType ? e : e.touches[0]
+	        cancelLongTap()
+	        touch.x2 = firstTouch.pageX
+	        touch.y2 = firstTouch.pageY
+
+	        deltaX += Math.abs(touch.x1 - touch.x2)
+	        deltaY += Math.abs(touch.y1 - touch.y2)
+	      })
+	      .on('touchend MSPointerUp pointerup', function(e){
+	        if((_isPointerType = isPointerEventType(e, 'up')) &&
+	          !isPrimaryTouch(e)) return
+	        cancelLongTap()
+
+	        // swipe
+	        if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) ||
+	            (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
+
+	          swipeTimeout = setTimeout(function() {
+	            if (touch.el){
+	              touch.el.trigger('swipe')
+	              touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
+	            }
+	            touch = {}
+	          }, 0)
+
+	        // normal tap
+	        else if ('last' in touch)
+	          // don't fire tap when delta position changed by more than 30 pixels,
+	          // for instance when moving to a point and back to origin
+	          if (deltaX < 30 && deltaY < 30) {
+	            // delay by one tick so we can cancel the 'tap' event if 'scroll' fires
+	            // ('tap' fires before 'scroll')
+	            tapTimeout = setTimeout(function() {
+
+	              // trigger universal 'tap' with the option to cancelTouch()
+	              // (cancelTouch cancels processing of single vs double taps for faster 'tap' response)
+	              var event = $.Event('tap')
+	              event.cancelTouch = cancelAll
+	              // [by paper] fix -> "TypeError: 'undefined' is not an object (evaluating 'touch.el.trigger'), when double tap
+	              if (touch.el) touch.el.trigger(event)
+
+	              // trigger double tap immediately
+	              if (touch.isDoubleTap) {
+	                if (touch.el) touch.el.trigger('doubleTap')
+	                touch = {}
+	              }
+
+	              // trigger single tap after 250ms of inactivity
+	              else {
+	                touchTimeout = setTimeout(function(){
+	                  touchTimeout = null
+	                  if (touch.el) touch.el.trigger('singleTap')
+	                  touch = {}
+	                }, 250)
+	              }
+	            }, 0)
+	          } else {
+	            touch = {}
+	          }
+	          deltaX = deltaY = 0
+
+	      })
+	      // when the browser window loses focus,
+	      // for example when a modal dialog is shown,
+	      // cancel all ongoing events
+	      .on('touchcancel MSPointerCancel pointercancel', cancelAll)
+
+	    // scrolling the window indicates intention of the user
+	    // to scroll, not tap or swipe, so cancel all ongoing events
+	    $(window).on('scroll', cancelAll)
+	  })
+
+	  ;['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
+	    'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(function(eventName){
+	    $.fn[eventName] = function(callback){ return this.on(eventName, callback) }
+	  })
+	})(Zepto)
 
 
 /***/ }
