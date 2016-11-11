@@ -65,6 +65,7 @@
 		}
 	});
 	var wx = __webpack_require__(6);
+
 	var $ = __webpack_require__(7);
 
 	__webpack_require__(8);
@@ -75,7 +76,58 @@
 
 	$('#myIscroll').hide()
 	$('.swiper-container').show();
-	 
+	$.post('http://2060703991.applinzi.com/php/getsign.php',
+	           {url:window.location.href},
+	           function(data){
+	        pos=data.indexOf('}');
+	        datastr=data.substring(0,pos+1);
+
+	        
+	        objdata=JSON.parse(datastr);
+	        wx.config({
+	    		  debug: true,
+	        	appId: objdata.appId,
+	            timestamp: objdata.timestamp,
+	           nonceStr: objdata.nonceStr,
+	            signature: objdata.signature,
+	           jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	            'getLocation','scanQRCode'
+	              ]
+	         });     
+	    })
+	 wx.ready(function () {
+	    // 在这里调用 API
+	    //获取经纬度  
+	      var bt=document.getElementById('map');
+	      $(bt).click(function(){
+	          
+	          
+	           wx.getLocation({
+	   				 type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+	  				  success: function (res) {
+	   					     var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	    					  var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	    				    var speed = res.speed; // 速度，以米/每秒计
+	   				  	   var accuracy = res.accuracy; // 位置精度
+	  				   	   alert(latitude);
+	   				    	alert(longitude);
+	    						}
+							});
+	      				});
+	      var bt_code=$('#twocode');
+	      bt_code.tap(function(){
+	      	wx.scanQRCode({
+	   			 needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+	   			 scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+	   			 success: function (res) {
+	   			 	alert("二维码"); 
+	   			 var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+						}
+					});
+	      })
+	        
+	  });
 	$('#enter').tap(function(){
 	 
 		$('#myIscroll').show()
