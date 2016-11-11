@@ -1,0 +1,26 @@
+{
+	"index.html": {
+		"resources": [
+			"img/gulp.png",
+			"img/h5.png",
+			"images/dianxin.png",
+			"img/angular.png",
+			"img/jquery.png",
+			"img/Zepto.png",
+			"css/index.css",
+			"images/page.jpg",
+			"images/shanli.png",
+			"img/js.png",
+			"css/iconfont.woff",
+			"img/phonegap.png",
+			"img/weixinjs.png",
+			"js/index.js",
+			"images/pkq.jpg",
+			"images/weifang.png",
+			"images/53118.png",
+			"images/zhengjiaotong.png",
+			"images/zc511.png",
+			"images/horays.png"
+		]
+	}
+}

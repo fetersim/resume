@@ -73,75 +73,100 @@
 	__webpack_require__(10);
 
 	module.exports = $;
-
-	$('#myIscroll').hide()
+	//模块预处理
+	$('#myIscroll').hide();
+	$("#bcbox").hide();
 	$('.swiper-container').show();
-	$.post('http://2060703991.applinzi.com/php/getsign.php',
-	           {url:window.location.href},
-	           function(data){
-	        pos=data.indexOf('}');
-	        datastr=data.substring(0,pos+1);
+	// Hbuild-api
+	$("#locationmap").tap(function(){
+		alert("获取经纬度");
+		getUserLocation();
+			
+	})
+	//地图插件预处理
 
-	        
-	        objdata=JSON.parse(datastr);
-	        wx.config({
-	    		  debug: true,
-	        	appId: objdata.appId,
-	            timestamp: objdata.timestamp,
-	           nonceStr: objdata.nonceStr,
-	            signature: objdata.signature,
-	           jsApiList: [
-	      // 所有要调用的 API 都要加到这个列表中
-	            'getLocation','scanQRCode'
-	              ]
-	         });     
-	    })
-	 wx.ready(function () {
-	    // 在这里调用 API
-	    //获取经纬度  
-	      var bt=document.getElementById('map');
-	      $(bt).click(function(){
-	          
-	          
-	           wx.getLocation({
-	   				 type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-	  				  success: function (res) {
-	   					     var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-	    					  var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-	    				    var speed = res.speed; // 速度，以米/每秒计
-	   				  	   var accuracy = res.accuracy; // 位置精度
-	  				   	   alert(latitude);
-	   				    	alert(longitude);
-	    						}
-							});
-	      				});
-	      var bt_code=$('#twocode');
-	      bt_code.tap(function(){
-	      	wx.scanQRCode({
-	   			 needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-	   			 scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-	   			 success: function (res) {
-	   			 	alert("二维码"); 
-	   			 var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-						}
-					});
-	      })
-	        
-	  });
+	var em=null,map=null;
+	// H5 plus事件处理
+	function plusReady(){
+		// 确保DOM解析完成
+		if(!em||!window.plus||map){return};
+		map = new plus.maps.Map("map");
+		map.centerAndZoom( new plus.maps.Point(116.3977,39.906016), 12 );
+	}
+	if(window.plus){
+		plusReady();
+	}else{
+		document.addEventListener("plusready",plusReady,false);
+	}
+	// DOMContentloaded事件处理
+	document.addEventListener("DOMContentLoaded",function(){
+		em=document.getElementById("map");
+		plusReady();
+	},false);
+	// 获取用户的当前位置信息
+	function getUserLocation(){
+		map.getUserLocation( function ( state, point ){
+			if( 0 == state ){
+				var pointjson=JSON.parse(JSON.stringify(point));
+				alert("现在位置的经度是"+pointjson.longitude+"纬度是"+pointjson.latitude);
+			}else{
+				alert( "Failed!" );
+			}
+		} );
+	}
+		// 与处理完毕
+	$("#twocode").tap(function(){
+		alert("扫描二维码");
+		$("#back").tap(closescan);
+	// 扩展API加载完毕后调用onPlusReady回调函数 
+	document.addEventListener( "plusready", onPlusReady, false );
+	// 扩展API加载完毕，现在可以正常调用扩展API
+	function onPlusReady() {
+		var e = document.getElementById("scan");
+		e.removeAttribute( "disabled" );
+	}
+	var scan = null;
+	function closescan(){
+		scan.cancel();
+		scan.close();
+		$("#bcbox").hide();
+	}
+	function onmarked( type, result ) {
+		var text = '未知: ';
+		switch(type){
+			case plus.barcode.QR:
+			text = 'QR: ';
+			break;
+			case plus.barcode.EAN13:
+			text = 'EAN13: ';
+			break;
+			case plus.barcode.EAN8:
+			text = 'EAN8: ';
+			break;
+		}
+		alert(result);
+		closescan()
+	}
+		$("#bcbox").show();
+		scan = new plus.barcode.Barcode('bcid');
+		scan.onmarked = onmarked;
+		scan.start(); 
+	})
+	// Hbuild End
 	$('#enter').tap(function(){
-	 
-		$('#myIscroll').show()
+	 $('#myIscroll').show()
 		$('.swiper-container').hide();
-		tapSkill();
-		$("#skill").tap(tapSkill);
+		tapSkill(true);
+		$("#skill").addClass("foottouch").tap(tapSkill);
 		$("#project").tap(tapProject);
-		$("#work").tap(tapWork);
+		$("#work").tap(tapWork); 
 		$("#my").tap(tapMy);
-		$("#twocode").tap(function(){
-
+		$("#footer div").tap(function(){
+			$("#footer div").removeClass("foottouch");
+			$(this).addClass("foottouch");
 		})
 		// -----------------tapSkill
-		function tapSkill(){
+		function tapSkill(flag){
 			$.ajax({
 			'type':'get', 
 			'url':'http://2060703991.applinzi.com/skill.php',
@@ -157,9 +182,13 @@
 					str=str.replace(reg,' '); 
 					$("#scroller ul").append("<li><div class='category'><img class='face' src='"+jsondata[i].face+"'/></div><div class='details'><div class='level'>"+jsondata[i].lastText+"</div>包括：<div class='name'>"+str+"</div></div></li>")
 				} 
-				var myScroll;
+				if(flag){
 				myScroll = new IScroll('#wrapper', { mouseWheel: true });
-				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);	
+			}else{
+				myScroll.refresh();
+			}
+				
 				$("#scroller ul li").each(function(){
 					var sofanm=parseInt(Math.random()*10)/10+0.4; 
 					$(this).css("transition","all "+sofanm+"s").addClass('anim'); 
@@ -187,9 +216,7 @@
 					}
 					$("#scroller ul").append("<li><div class='category'>"+data[i].category+":<b>"+data[i].name+"</b></div><figure><img class='printimage' src='"+imgsrc+"'/><figcation class='description'>"+data[i].description+"</figcation></figure><div class='time'>项目历时:"+data[i].time+"</div><div class='detail'>主要任务:"+data[i].detail+"</div><div class='tech'> 应用到的技术:"+data[i].tech+"</div><div class='gourl'>网址:<a href='"+data[i].url+"'>"+data[i].url+"</a></div></li>")
 				}
-		 var myScroll; 
-		 myScroll = new IScroll('#wrapper', { mouseWheel: true });
-		 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				myScroll.refresh();
 			}
 		})
 		}
@@ -206,12 +233,11 @@
 				console.log(data);
 				$("#scroller ul li,#line").remove();  
 				$("#scroller ul")[0].className="workpage";  
-				//for (var i = 0; i < data.length; i++) {
-					//$("#scroller ul").append("<li><div class='category'>"+data[i].category+":<b>"+data[i].name+"</b></div><figure><img class='printimage' src='"+imgsrc+"'/><figcation class='description'>"+data[i].description+"</figcation></figure><div class='time'>项目历时:"+data[i].time+"</div><div class='detail'>主要任务:"+data[i].detail+"</div><div class='tech'> 应用到的技术:"+data[i].tech+"</div><div class='gourl'>网址:<a href='"+data[i].url+"'>"+data[i].url+"</a></div></li>")
-				//}
-		 		var myScroll; 
-				 myScroll = new IScroll('#wrapper', { mouseWheel: true });
-				 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				for (var i = 0; i < data.length; i++) {
+					$("#scroller ul").append("<li><div class='category'>"+data[i].category+":<b>"+data[i].name+"</b></div><div class='time'>工作时间:"+data[i].time+"</div><div class='people'>技术组人数:"+data[i].peoples+"</div><div class='workproject'>做过的项目"+data[i].projects+"</div></li>");
+				}
+				myScroll.refresh();
+				 $("#scroller ul li").css("transition","all 1s").addClass('anim'); 
 			}
 		})
 				}
@@ -225,7 +251,6 @@
 			'success':function(data){
 				 var pos=data.indexOf("<");
 				var data=JSON.parse(data.substring(0,pos));
-				console.log(data);
 				$("#scroller ul li,#line").remove();  
 				$("#scroller ul")[0].className="workpage";
 				$("#scroller ul").append("<li><span>职业:</span>"+data.work+"</li>")
@@ -238,9 +263,7 @@
 									var ary=$(".workpage li");
 									var lastli=$(ary[ary.length-1]);
 				$("#line").height(lastli.position().top+lastli.height());
-		 		var myScroll; 
-				 myScroll = new IScroll('#wrapper', { mouseWheel: true });
-				 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				myScroll.refresh();
 				 $("#scroller ul li").css("transition","all 1s").addClass('anim'); 
 			}
 		})
@@ -306,6 +329,12 @@
 	      '<path d="M672.017812 145.524229c-43.244877-45.256695-100.849795-70.180316-162.20308-70.180316-61.352262 0-118.95718 24.923621-162.202057 70.180316-42.88058 44.876025-66.496417 104.442619-66.496417 167.727905 0 63.285285 23.615837 122.85188 66.496417 167.727905 11.970624 12.527302 25.046417 23.488947 38.99202 32.803071-47.223487 16.1058-100.818073 43.473074-147.735592 90.006853-77.78245 77.146977-117.352638 186.799243-117.61051 325.909396-0.030699 16.95412 13.68773 30.723715 30.64185 30.75646 0.020466 0 0.038886 0 0.058328 0 16.927514 0 30.66641-13.708196 30.698132-30.64185 0.291642-157.359777 54.953535-268.473323 162.46607-330.251279 81.517514-46.840771 165.102104-47.3821 166.381235-47.383123 0.045025 0 0.089028 0 0.134053 0 3.04331 0 5.982242-0.449231 8.759492-1.276062 57.370581-2.696409 110.872046-27.279269 151.621081-69.923466 42.88058-44.876025 66.495394-104.441596 66.495394-167.727905C738.514229 249.966849 714.898392 190.400254 672.017812 145.524229zM509.814732 489.762044c-92.248915 0-167.300163-79.181308-167.300163-176.50991s75.051248-176.50991 167.300163-176.50991 167.300163 79.182331 167.300163 176.50991S602.06467 489.762044 509.814732 489.762044z"  ></path>'+
 	      ''+
 	      '<path d="M761.574411 575.095462c-14.617914-8.59167-33.43138-3.706411-42.022027 10.91048s-3.706411 33.430357 10.909456 42.022027c0.240477 0.141216 25.18047 16.012679 50.718074 58.037776 25.971485 42.741411 56.931583 120.368318 56.931583 247.464867 0 16.95412 13.745035 30.699155 30.699155 30.699155s30.699155-13.745035 30.699155-30.699155C899.508786 659.322688 767.206683 578.405854 761.574411 575.095462z"  ></path>'+
+	      ''+
+	    '</symbol>'+
+	  ''+
+	    '<symbol id="icon-back" viewBox="0 0 1024 1024">'+
+	      ''+
+	      '<path d="M758.636525 1006.168939c7.000931 0 14.081337-2.709339 19.43499-8.099117 10.794006-10.765106 10.794006-28.206023 0-38.985578L329.766263 510.750092l448.312477-448.319702c10.794006-10.750656 10.794006-28.220472 0-38.971129-10.757881-10.779556-28.198798-10.779556-38.963904 0L251.787881 510.750092l487.326955 487.31973C744.475715 1003.4596 751.55612 1006.168939 758.636525 1006.168939L758.636525 1006.168939z"  ></path>'+
 	      ''+
 	    '</symbol>'+
 	  ''+

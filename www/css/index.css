@@ -57,12 +57,12 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 45px;
-  line-height: 45px;
+  height: 0.45rem;
+  line-height: 0.45rem;
   background: #CD235C;
   padding: 0;
   color: #eee;
-  font-size: 20px;
+  font-size: 0.3rem;
   text-align: center;
   font-weight: bold;
   display: flex;
@@ -83,10 +83,15 @@ body {
   align-items: center;
   justify-content: center; }
 
-#footer .button {
+#footer button {
   flex: 1;
   color: white;
+  font-size: 0.2rem;
   text-align: center; }
+
+#footer .foottouch {
+  color: rgba(0, 255, 255, 0.4);
+  font-size: 0.25rem; }
 
 #wrapper {
   position: absolute;
@@ -119,25 +124,15 @@ body {
   -o-text-size-adjust: none;
   text-size-adjust: none; }
 
-#header #twocode {
-  height: 100%;
-  width: 0.6rem;
-  border-radius: 0.04rem 0 0 0.04rem;
-  border: 1px solid #f1f1f1;
-  border-right: none;
+#header button {
+  font-size: 0.26rem;
+  line-height: 0.45rem;
+  background: rgba(105, 35, 92, 0.09);
+  border: none;
   color: #fff;
-  background: rgba(255, 100, 70, 0.4);
-  text-align: center; }
-
-#header #map {
   height: 100%;
-  border-radius: 0 0.04rem 0.04rem 0;
-  width: 0.6rem;
-  border: 1px solid #f1f1f1;
-  border-left: none;
-  color: #fff;
-  background: rgba(255, 100, 70, 0.4);
-  text-align: center; }
+  text-align: center;
+  width: 0.6rem; }
 
 /**
  * Swiper 3.3.1
@@ -3156,24 +3151,6 @@ html, body {
   margin-top: 0.2rem;
   transform: rotate(10deg); }
 
-.slid2 li:nth-of-type(1) {
-  background: url("../images/weifang.png");
-  height: 0.5rem;
-  color: #fff;
-  background-size: 100% 100%; }
-
-.slid2 li:nth-of-type(2) {
-  background: url("../images/dianxin.png");
-  height: 0.5rem;
-  color: #fff;
-  background-size: 110% 100%; }
-
-.slid2 li:nth-of-type(3) {
-  background: url("../images/shanli.png");
-  height: 0.5rem;
-  color: #fff;
-  background-size: 100% 100%; }
-
 .slid3 button {
   width: 80%;
   height: 0.4rem;
@@ -3329,11 +3306,49 @@ html, body {
 #scroller .anim {
   margin-left: 0 !important; }
 
+#bcid {
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  left: 0.6rem;
+  top: 2rem;
+  background: transparent;
+  border: 1px solid #fff; }
+
+#bcbox {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  left: 0;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.8); }
+
+#back {
+  width: 0.4rem;
+  height: 0.4rem;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 0.3rem;
+  line-height: 0.4rem;
+  text-align: center; }
+
+#map {
+  width: 0;
+  height: 0;
+  display: none;
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+  border: 0; }
+
 @font-face {
   font-family: "iconfont";
-  src: url("iconfont.eot?t=1478780027932");
+  src: url("iconfont.eot?t=1478844377885");
   /* IE9*/
-  src: url("iconfont.eot?t=1478780027932#iefix") format("embedded-opentype"), url("iconfont.woff?t=1478780027932") format("woff"), url("iconfont.ttf?t=1478780027932") format("truetype"), url("iconfont.svg?t=1478780027932#iconfont") format("svg");
+  src: url("iconfont.eot?t=1478844377885#iefix") format("embedded-opentype"), url("iconfont.woff?t=1478844377885") format("woff"), url("iconfont.ttf?t=1478844377885") format("truetype"), url("iconfont.svg?t=1478844377885#iconfont") format("svg");
   /* iOS 4.1- */ }
 
 .iconfont {
@@ -3358,6 +3373,9 @@ html, body {
 
 .icon-wo:before {
   content: "\e6a3"; }
+
+.icon-back:before {
+  content: "\e606"; }
 
 .icon-skill:before {
   content: "\e622"; }
